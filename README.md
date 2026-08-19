@@ -3,12 +3,34 @@
 Full-cycle construction company site. Latvian (default, at the root) and English (under `/en/`).
 Static build, 37 pages, no runtime dependencies for the animation.
 
+**Live preview:** https://tigerstar07.github.io/bmes/
+
 ```bash
 npm run dev      # http://localhost:4321
 npm run build    # → dist/
 npm run preview  # serve the built output
 npm run check    # typecheck (must stay at 0 errors)
 ```
+
+## Deployment
+
+Pushing to `main` builds and publishes automatically via
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Nothing else to run.
+
+The preview sits on a GitHub Pages project URL, which serves from a subpath
+(`/bmes/`) rather than the root. Two env vars in the workflow handle that:
+
+| | preview (now) | real domain (later) |
+|---|---|---|
+| `ASTRO_SITE` | `https://tigerstar07.github.io` | unset → `https://bmes.lv` |
+| `ASTRO_BASE` | `/bmes` | unset → `/` |
+
+Every link in the site is built through the helpers in `src/i18n/utils.ts`, which
+prepend `import.meta.env.BASE_URL`. So **moving to the real domain is deleting the two
+`env:` lines from the workflow** — no link, canonical, hreflang or sitemap edits.
+
+Both builds are verified: with the base set, all 1,983 internal links resolve under
+`/bmes/`; without it, they resolve at the root against `bmes.lv`.
 
 ## Stack
 
