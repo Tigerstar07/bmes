@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import ServiceDetail from '../../components/pages/ServiceDetail.astro';
+import { serviceSlugs, type ServiceKey } from '../../i18n/ui';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('services', (e) => e.data.lang === 'lv');
+  return entries.map((entry) => ({
+    params: { slug: serviceSlugs[entry.data.key as ServiceKey].lv },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+
+<ServiceDetail lang="lv" entry={entry} />

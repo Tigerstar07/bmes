@@ -1,0 +1,202 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../PageHeader.astro';
+import ProjectCard from '../ProjectCard.astro';
+import CtaBand from '../CtaBand.astro';
+import Placeholder from '../Placeholder.astro';
+import type { Lang, ServiceKey } from '../../i18n/ui';
+import { useTranslations, route, servicePath } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'projects'>;
+}
+
+const { lang, entry } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(entry);
+const d = entry.data;
+
+/* Service names for the tags on this project. */
+const services = await getCollection(
+  'services',
+  (e) => e.data.lang === lang && d.services.includes(e.data.key),
+);
+
+/* Two other projects to keep the visitor moving. */
+const others = (
+  await getCollection('projects', (e) => e.data.lang === lang && e.data.pid !== d.pid)
+)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 2);
+
+const facts = [
+  { k: t('projects.location'), v: d.location },
+  { k: t('projects.year'), v: String(d.year) },
+  ...(d.area ? [{ k: t('projects.area'), v: d.area }] : []),
+  ...(d.client ? [{ k: t('projects.client'), v: d.client }] : []),
+];
+
+const gallery = Array.from({ length: d.gallery }, (_, i) => i);
+---
+
+<Base
+  lang={lang}
+  title={d.title}
+  active="projects"
+  description={d.scope}
+  projectSlug={d.pid}
+>
+  <PageHeader
+    eyebrow={t('projects.eyebrow')}
+    title={d.title}
+    lead={d.scope}
+    backHref={route(lang, 'projects')}
+    backLabel={t('projects.back')}
+  />
+
+  <!-- lead image -->
+  <section class="lead-media">
+    <div class="wrap" data-reveal>
+      <Placeholder label={d.title} ratio="16 / 9" parallax dark />
+    </div>
+  </section>
+
+  <!-- facts + description -->
+  <section class="detail">
+    <div class="wrap detail-grid">
+      <dl class="facts" data-reveal>
+        {
+          facts.map((f) => (
+            <div class="fact">
+              <dt class="label">{f.k}</dt>
+              <dd class="fact-v tnum">{f.v}</dd>
+            </div>
+          ))
+        }
+        <div class="fact">
+          <dt class="label">{t('footer.services')}</dt>
+          <dd class="fact-tags">
+            {services.map((s) => (
+              <a class="tag" href={servicePath(lang, s.data.key as ServiceKey)}>
+                {s.data.title}
+              </a>
+            ))}
+          </dd>
+        </div>
+      </dl>
+
+      <div class="prose detail-prose" data-reveal style="--reveal-delay: 80ms">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  <!-- gallery -->
+  <section class="section">
+    <div class="wrap">
+      <p class="label" data-reveal>{t('projects.gallery')}</p>
+      <div class="gal" data-stagger>
+        {
+          gallery.map((i) => (
+            <div class:list={['gal-item', i % 3 === 0 && 'gal-wide']} data-reveal>
+              <Placeholder
+                label={`${d.title} ${i + 1}`}
+                ratio={i % 3 === 0 ? '16 / 9' : '4 / 3'}
+                parallax
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- more projects -->
+  <section class="section section-sunken">
+    <div class="wrap">
+      <p class="label" data-reveal>{t('projects.all')}</p>
+      <div class="more-grid" data-stagger>
+        {
+          others.map((p) => (
+            <ProjectCard
+              lang={lang}
+              pid={p.data.pid}
+              title={p.data.title}
+              location={p.data.location}
+              year={p.data.year}
+              scope={p.data.scope}
+              area={p.data.area}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  .lead-media { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+
+  .detail { padding-bottom: clamp(2rem, 4vw, 3rem); }
+
+  .detail-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .detail-grid { grid-template-columns: 0.7fr 1.3fr; gap: 4.5rem; align-items: start; }
+    .facts { position: sticky; top: 7rem; }
+  }
+
+  .facts { margin: 0; display: grid; gap: 1.25rem; }
+  .fact { padding-bottom: 1.25rem; border-bottom: 1px solid var(--line); }
+  .fact:last-child { border-bottom: 0; padding-bottom: 0; }
+  .fact-v {
+    margin: 0.4rem 0 0;
+    font-family: var(--f-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .fact-tags {
+    margin: 0.6rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tag {
+    font-size: 0.8rem;
+    padding: 0.35em 0.75em;
+    background: var(--brand-tint);
+    color: var(--brand);
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background 0.2s var(--ease-out);
+  }
+  .tag:hover { background: var(--brand); color: #fff; }
+
+  .detail-prose :global(p) { font-size: 1.08rem; line-height: 1.7; }
+
+  /* --- gallery --- */
+  .gal {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 760px) {
+    .gal { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .gal-wide { grid-column: 1 / -1; }
+  }
+
+  .more-grid {
+    display: grid;
+    gap: 2.25rem 2rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 700px) { .more-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

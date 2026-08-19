@@ -1,0 +1,179 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../PageHeader.astro';
+import CtaBand from '../CtaBand.astro';
+import Placeholder from '../Placeholder.astro';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const copy = {
+  lv: {
+    lead: 'BMES ir Latvijas būvuzņēmums, kas strādā ar pilnu ciklu. Projektējam, būvējam, ierīkojam inženiersistēmas un pēc tam objektu arī uzturam.',
+    body: [
+      'Uzņēmumu dibinājām 2012. gadā ar vienkāršu atziņu: lielākā daļa problēmu būvniecībā nerodas darba kvalitātes dēļ, bet gan robos starp uzņēmumiem. Projektētājs nodod rasējumu būvniekam, būvnieks atrod tajā kļūdu, un pasūtītājs paliek pa vidu ar diviem rēķiniem un vienu problēmu.',
+      'Mēs strādājam citādi. Viens līgums sedz visu ceļu, un objektā ir viens cilvēks, kas par to atbild. Ja projektā ir kļūda, to labo tas pats uzņēmums, kas to pieļāva, un pasūtītājs par to nemaksā.',
+      'Šodien komandā ir 32 speciālisti: arhitekti, būvinženieri, projektu vadītāji un savas būvbrigādes. Strādājam visā Latvijā, lielākoties Rīgā un Pierīgā.',
+    ],
+    valuesTitle: 'Kā mēs strādājam',
+    values: [
+      { t: 'Viena atbildība', d: 'Nav situācijas, kurā apakšuzņēmēji norāda viens uz otru. Objektā ir viens vadītājs un viens telefona numurs.' },
+      { t: 'Tāme, kas turas', d: 'Tāmi veidojam pēc apsekošanas, ne pēc kvadrātmetriem. Izmaiņas saskaņojam rakstiski, pirms tās notiek.' },
+      { t: 'Termiņi ar rezervi', d: 'Solām termiņu, ko varam ievērot arī tad, ja piegāde kavējas. Labāk nodot agrāk nekā skaidrot kavējumu.' },
+      { t: 'Paliekam pēc nodošanas', d: 'Garantijas laikā atbildam uz zvaniem. Daudzus objektus arī uzturam tālāk.' },
+    ],
+    teamTitle: 'Komanda',
+    teamLead: 'Arhitekti, būvinženieri un projektu vadītāji, kas strādā kopā, nevis pa ķēdi.',
+  },
+  en: {
+    lead: 'BMES is a Latvian construction company working the full cycle. We design, we build, we install the building services, and afterwards we maintain the building.',
+    body: [
+      'The company was founded in 2012 on a simple observation: most problems in construction do not come from poor workmanship, they come from the gaps between companies. The designer hands a drawing to the builder, the builder finds a mistake in it, and the client is left in the middle holding two invoices and one problem.',
+      'We work differently. One contract covers the whole route, and one person on site is accountable for it. If there is an error in the design, it is corrected by the same company that made it, at no extra cost to the client.',
+      'Today the team is 32 specialists: architects, structural engineers, project managers and our own site crews. We work throughout Latvia, mostly in Riga and the surrounding region.',
+    ],
+    valuesTitle: 'How we work',
+    values: [
+      { t: 'One accountability', d: 'No situation where subcontractors point at each other. One site manager, one phone number.' },
+      { t: 'An estimate that holds', d: 'Estimates come from a survey, not from a price per square metre. Changes are agreed in writing before they happen.' },
+      { t: 'Deadlines with slack', d: 'We promise a date we can still meet if a delivery is late. Better to hand over early than to explain a delay.' },
+      { t: 'We stay after handover', d: 'We answer the phone during the warranty period, and we go on maintaining many of the buildings we put up.' },
+    ],
+    teamTitle: 'The team',
+    teamLead: 'Architects, engineers and project managers who work together rather than in sequence.',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={t('nav.about')} active="about" description={copy.lead}>
+  <PageHeader eyebrow={t('about.eyebrow')} title={t('about.title')} lead={copy.lead} />
+
+  <section class="section-pad">
+    <div class="wrap about-grid">
+      <div class="about-media" data-reveal>
+        <Placeholder label={lang === 'lv' ? 'Komanda / objekts' : 'Team / site'} ratio="3 / 4" parallax />
+      </div>
+      <div class="prose about-text">
+        {copy.body.map((p, i) => (
+          <p data-reveal style={`--reveal-delay: ${i * 70}ms`}>{p}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-sunken">
+    <div class="wrap">
+      <p class="label" data-reveal>{copy.valuesTitle}</p>
+      <div class="values" data-stagger>
+        {
+          copy.values.map((v, i) => (
+            <div class="value" data-reveal>
+              <span class="value-n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h2 class="value-t">{v.t}</h2>
+              <p class="value-d">{v.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="team-head">
+        <div>
+          <p class="label" data-reveal>{copy.teamTitle}</p>
+          <h2 data-reveal style="--reveal-delay: 60ms">{copy.teamLead}</h2>
+        </div>
+      </div>
+      <div class="team-grid" data-stagger>
+        {
+          [0, 1, 2, 3].map(() => (
+            <div data-reveal>
+              <Placeholder label={lang === 'lv' ? 'Portrets' : 'Portrait'} ratio="4 / 5" />
+            </div>
+          ))
+        }
+      </div>
+      <p class="team-note">
+        {lang === 'lv'
+          ? 'Šeit būs komandas fotogrāfijas. Vārdus un amatus pievienosim, tiklīdz tie būs saņemti.'
+          : 'Portrait slots are waiting for photographs. Names and roles will be added once they arrive.'}
+      </p>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  .section-pad { padding-block: clamp(3rem, 6vw, 5rem); }
+
+  .about-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .about-grid { grid-template-columns: 0.85fr 1.15fr; gap: 4rem; align-items: start; }
+    .about-media { position: sticky; top: 7rem; }
+  }
+
+  .about-text :global(p) {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .values {
+    display: grid;
+    gap: 2.25rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 700px) { .values { grid-template-columns: repeat(2, 1fr); gap: 3rem 2.5rem; } }
+  @media (min-width: 1100px) { .values { grid-template-columns: repeat(4, 1fr); } }
+
+  .value { padding-top: 1.15rem; border-top: 1px solid var(--line-2); }
+  .value-n {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--accent-ink);
+  }
+  .value-t {
+    font-size: 1.15rem;
+    margin-top: 0.7rem;
+    letter-spacing: -0.025em;
+  }
+  .value-d {
+    margin-top: 0.6rem;
+    font-size: var(--t-sm);
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .team-head h2 {
+    font-size: var(--t-h3);
+    font-weight: 500;
+    max-width: 34ch;
+    margin-top: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 800px) { .team-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
+
+  .team-note {
+    margin-top: 1.5rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+</style>

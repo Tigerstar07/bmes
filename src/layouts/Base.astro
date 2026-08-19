@@ -1,0 +1,130 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { company, type Lang, type RouteKey, type ServiceKey } from '../i18n/ui';
+import { useTranslations, alternatePath, htmlLang, asset } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+  /** Which nav item to mark as current. */
+  active?: RouteKey;
+  /** Pass so the language switcher can find the counterpart page. */
+  serviceKey?: ServiceKey;
+  projectSlug?: string;
+  /** Hero pages handle their own top spacing. */
+  flush?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  active,
+  serviceKey,
+  projectSlug,
+  flush = false,
+} = Astro.props;
+
+const t = useTranslations(lang);
+const desc = description ?? t('site.description');
+
+const site = Astro.site;
+const canonical = new URL(Astro.url.pathname, site ?? Astro.url).toString();
+
+const altPath = alternatePath(Astro.url, lang, { serviceKey, projectSlug });
+const selfPath = Astro.url.pathname;
+
+const lvHref = new URL(lang === 'lv' ? selfPath : altPath, site ?? Astro.url).toString();
+const enHref = new URL(lang === 'en' ? selfPath : altPath, site ?? Astro.url).toString();
+
+const fullTitle =
+  title === company.name ? `${company.name} | ${t('site.tagline')}` : `${title} | ${company.name}`;
+
+/* Structured data. GeneralContractor is the schema.org type search
+   engines use to surface a builder's phone number and address. */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'GeneralContractor',
+  '@id': `${site ?? ''}#organisation`,
+  name: company.legalName,
+  alternateName: company.name,
+  description: desc,
+  url: site?.toString(),
+  telephone: company.phone,
+  email: company.email,
+  foundingDate: company.founded,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: company.street,
+    addressLocality: company.city,
+    postalCode: company.postalCode,
+    addressCountry: company.country,
+  },
+  areaServed: { '@type': 'Country', name: 'Latvia' },
+  knowsLanguage: ['lv', 'en'],
+};
+---
+
+<!doctype html>
+<html lang={htmlLang[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="alternate" hreflang="lv" href={lvHref} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="x-default" href={lvHref} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={company.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'lv' ? 'lv_LV' : 'en_GB'} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#12503A" />
+    <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-mono" />
+
+    <script is:inline>
+      /* Opt in to the reveal animations only once we know scripting is
+         alive. Without this class nothing is ever hidden, so a failed
+         bundle degrades to a plain, fully readable page. */
+      document.documentElement.classList.add('js-motion');
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">{t('nav.skip')}</a>
+
+    <Header lang={lang} active={active} altPath={altPath} />
+
+    <main id="main" class={flush ? '' : 'main-pad'}>
+      <slot />
+    </main>
+
+    <Footer lang={lang} />
+
+    <script src="../scripts/motion.js"></script>
+  </body>
+</html>
+
+<style>
+  /* Pages without a hero need clearance under the fixed header. */
+  .main-pad {
+    padding-top: clamp(7rem, 12vw, 10rem);
+  }
+</style>

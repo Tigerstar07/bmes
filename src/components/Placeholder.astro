@@ -1,0 +1,43 @@
+---
+/**
+ * Stand-in for a photograph until Jānis's images arrive.
+ * Swap the inner markup for <Image src={...} /> per slot. The
+ * wrapper's aspect ratio and parallax behaviour stay the same.
+ */
+interface Props {
+  label?: string;
+  ratio?: string;
+  dark?: boolean;
+  parallax?: boolean;
+  class?: string;
+}
+
+const {
+  label = 'Foto',
+  ratio = '4 / 3',
+  dark = false,
+  parallax = false,
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  class:list={['ph-wrap', parallax && 'parallax-media', className]}
+  style={`--ratio: ${ratio}`}
+>
+  <div class:list={['ph', dark && 'ph-dark']} data-ph={label} role="img" aria-label={label}></div>
+</div>
+
+<style>
+  .ph-wrap {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--bg-sunken);
+  }
+  .ph-wrap > :global(.ph) {
+    position: absolute;
+    inset: 0;
+  }
+</style>

@@ -1,0 +1,164 @@
+---
+import { getCollection } from 'astro:content';
+import { company, type Lang, type ServiceKey } from '../i18n/ui';
+import { useTranslations, route, servicePath } from '../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const services = (await getCollection('services', (e) => e.data.lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const year = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <div class="ftr-brand">
+        <span class="ftr-name">{company.name}</span>
+        <p class="ftr-tag">{t('site.tagline')}</p>
+        <a class="ftr-big-cta" href={route(lang, 'contact')}>
+          {t('cta.button')}
+          <svg class="arrow" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
+
+      <nav class="ftr-col" aria-label={t('footer.services')}>
+        <h2 class="label">{t('footer.services')}</h2>
+        <ul>
+          {services.map((s) => (
+            <li>
+              <a href={servicePath(lang, s.data.key as ServiceKey)}>{s.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="ftr-col" aria-label={t('footer.nav')}>
+        <h2 class="label">{t('footer.nav')}</h2>
+        <ul>
+          <li><a href={route(lang, 'home')}>{t('nav.home')}</a></li>
+          <li><a href={route(lang, 'about')}>{t('nav.about')}</a></li>
+          <li><a href={route(lang, 'services')}>{t('nav.services')}</a></li>
+          <li><a href={route(lang, 'projects')}>{t('nav.projects')}</a></li>
+          <li><a href={route(lang, 'contact')}>{t('nav.contact')}</a></li>
+        </ul>
+      </nav>
+
+      <div class="ftr-col">
+        <h2 class="label">{t('footer.contact')}</h2>
+        <ul class="ftr-contact">
+          <li><a href={`tel:${company.phoneHref}`}>{company.phone}</a></li>
+          <li><a href={`mailto:${company.email}`}>{company.email}</a></li>
+          <li class="ftr-addr">
+            {company.street}<br />
+            {company.city}, {company.postalCode}
+          </li>
+          <li class="ftr-addr">{t('contact.hoursValue')}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ftr-bottom">
+      <p>© {year} {company.legalName}. {t('footer.rights')}</p>
+      <div class="ftr-legal">
+        <span class="ftr-reg">{company.regNr}</span>
+        <a href={route(lang, 'privacy')}>{t('footer.privacy')}</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    background: var(--bg-invert);
+    color: var(--on-invert-2);
+    padding-block: clamp(3.5rem, 7vw, 6rem) 2rem;
+  }
+
+  .ftr-top {
+    display: grid;
+    gap: 2.75rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--line-invert);
+  }
+  @media (min-width: 760px) {
+    .ftr-top { grid-template-columns: 1fr 1fr; }
+  }
+  @media (min-width: 1060px) {
+    .ftr-top { grid-template-columns: 1.6fr 1fr 0.8fr 1fr; gap: 3rem; }
+  }
+
+  .ftr-name {
+    display: block;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.045em;
+    color: var(--on-invert);
+  }
+  .ftr-tag {
+    margin: 0.4rem 0 1.75rem;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+
+  .ftr-big-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--f-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--accent-lift);
+    text-decoration: none;
+    padding-bottom: 3px;
+    border-bottom: 1px solid color-mix(in oklab, var(--accent-lift) 40%, transparent);
+    transition: gap 0.3s var(--ease-out), border-color 0.3s;
+  }
+  .ftr-big-cta:hover { gap: 1em; border-bottom-color: var(--accent-lift); }
+  .ftr-big-cta .arrow { width: 18px; height: 18px; }
+
+  /* The footer is a dark surface, so labels need the light muted tone.
+     --muted is tuned for the light ground and only reaches 3.1:1 here. */
+  .ftr :global(.label) { color: var(--on-invert-2); }
+
+  .ftr-col h2 { margin-bottom: 1.1rem; }
+  .ftr-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
+  .ftr-col a {
+    display: inline-block;
+    /* Keeps the tap target at/above the 24px WCAG 2.5.8 minimum
+       without visually loosening the list. */
+    padding-block: 0.3rem;
+    font-size: 0.95rem;
+    color: var(--on-invert-2);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+  .ftr-col a:hover { color: var(--on-invert); }
+
+  .ftr-contact a { color: var(--on-invert); }
+  .ftr-addr { font-size: 0.92rem; line-height: 1.55; }
+
+  .ftr-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    padding-top: 1.75rem;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+  .ftr-bottom p { margin: 0; }
+  .ftr-legal { display: flex; gap: 1.5rem; align-items: center; }
+  .ftr-legal a { color: var(--on-invert-2); text-decoration: none; }
+  .ftr-legal a:hover { color: var(--on-invert); text-decoration: underline; }
+  .ftr-reg { opacity: 0.65; }
+</style>

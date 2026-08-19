@@ -1,0 +1,60 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  /** Optional back link, used on detail pages. */
+  backHref?: string;
+  backLabel?: string;
+}
+const { eyebrow, title, lead, backHref, backLabel } = Astro.props;
+---
+
+<header class="ph-head">
+  <div class="wrap">
+    {
+      backHref && (
+        <a class="back" href={backHref}>
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M16 10H5M9 5l-5 5 5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {backLabel}
+        </a>
+      )
+    }
+    <p class="label" data-reveal>{eyebrow}</p>
+    <h1 data-reveal style="--reveal-delay: 60ms">{title}</h1>
+    {lead && <p class="lead ph-lead" data-reveal style="--reveal-delay: 130ms">{lead}</p>}
+  </div>
+  <hr class="rule head-rule" />
+</header>
+
+<style>
+  .ph-head { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 2rem;
+    transition: color 0.2s var(--ease-out), gap 0.25s var(--ease-out);
+  }
+  .back:hover { color: var(--brand); gap: 0.8em; }
+  .back svg { width: 16px; height: 16px; }
+
+  h1 {
+    font-size: var(--t-h1);
+    max-width: 18ch;
+    margin-top: 0.6rem;
+  }
+
+  .ph-lead { margin-top: 1.4rem; max-width: 52ch; }
+
+  .head-rule { margin-top: clamp(2.5rem, 5vw, 4rem); }
+</style>

@@ -1,0 +1,436 @@
+---
+import { getCollection } from 'astro:content';
+import { company, type Lang, type RouteKey } from '../i18n/ui';
+import { useTranslations, route, servicePath } from '../i18n/utils';
+import type { ServiceKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  active?: RouteKey;
+  altPath: string;
+}
+
+const { lang, active, altPath } = Astro.props;
+const t = useTranslations(lang);
+
+const services = (await getCollection('services', (e) => e.data.lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const nav: { key: RouteKey; label: string }[] = [
+  { key: 'about', label: t('nav.about') },
+  { key: 'services', label: t('nav.services') },
+  { key: 'projects', label: t('nav.projects') },
+  { key: 'contact', label: t('nav.contact') },
+];
+
+const other = lang === 'lv' ? 'EN' : 'LV';
+---
+
+<header class="hdr" data-header>
+  <div class="hdr-inner wrap">
+    <a href={route(lang, 'home')} class="brand" aria-label={company.name}>
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M2 21h20" stroke="currentColor" stroke-width="2" stroke-linecap="square" />
+          <path d="M5 21V9l7-5 7 5v12" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+          <path d="M10 21v-6h4v6" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </span>
+      <span class="brand-name">{company.name}</span>
+    </a>
+
+    <nav class="nav-desktop" aria-label={t('nav.menu')}>
+      {
+        nav.map((item) =>
+          item.key === 'services' ? (
+            <div class="has-drop">
+              <a
+                href={route(lang, item.key)}
+                class="nav-link"
+                aria-current={active === item.key ? 'page' : undefined}
+              >
+                {item.label}
+                <svg class="caret" viewBox="0 0 12 12" aria-hidden="true">
+                  <path d="M2 4.5 6 8.5l4-4" stroke="currentColor" stroke-width="1.5" fill="none" />
+                </svg>
+              </a>
+              <div class="drop">
+                <div class="drop-inner">
+                  {services.map((s) => (
+                    <a href={servicePath(lang, s.data.key as ServiceKey)} class="drop-item">
+                      <span class="drop-title">{s.data.title}</span>
+                      <span class="drop-sub">{s.data.short}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={route(lang, item.key)}
+              class="nav-link"
+              aria-current={active === item.key ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ),
+        )
+      }
+    </nav>
+
+    <div class="hdr-right">
+      <a class="lang" href={altPath} hreflang={lang === 'lv' ? 'en' : 'lv'} title={t('lang.switch')}>
+        {other}
+      </a>
+      <a class="hdr-cta" href={route(lang, 'contact')}>{t('cta.button')}</a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" data-burger>
+        <span class="sr">{t('nav.menu')}</span>
+        <span class="burger-box" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile" id="mobile-menu" data-mobile hidden>
+  <nav class="mobile-inner wrap" aria-label={t('nav.menu')}>
+    <a href={route(lang, 'home')} class="m-link">{t('nav.home')}</a>
+    <a href={route(lang, 'about')} class="m-link">{t('nav.about')}</a>
+    <a href={route(lang, 'services')} class="m-link">{t('nav.services')}</a>
+    <div class="m-sub">
+      {
+        services.map((s) => (
+          <a href={servicePath(lang, s.data.key as ServiceKey)} class="m-sublink">
+            {s.data.title}
+          </a>
+        ))
+      }
+    </div>
+    <a href={route(lang, 'projects')} class="m-link">{t('nav.projects')}</a>
+    <a href={route(lang, 'contact')} class="m-link">{t('nav.contact')}</a>
+    <div class="m-foot">
+      <a class="lang lang-m" href={altPath}>{other}</a>
+      <a class="m-phone" href={`tel:${company.phoneHref}`}>{company.phone}</a>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .hdr {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    background: color-mix(in oklab, var(--bg) 80%, transparent);
+    backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  }
+  .hdr[data-scrolled] {
+    background: color-mix(in oklab, var(--bg) 94%, transparent);
+    border-bottom-color: var(--line);
+  }
+
+  .hdr-inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 5rem;
+  }
+
+  /* --- brand --- */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--brand);
+    margin-right: auto;
+  }
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--accent);
+  }
+  .brand-mark svg { width: 100%; height: 100%; }
+  .brand-name {
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+  }
+
+  /* --- desktop nav --- */
+  .nav-desktop {
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  @media (min-width: 1000px) {
+    .nav-desktop { display: flex; }
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.5rem 0.85rem;
+    font-family: var(--f-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ink-2);
+    border-radius: var(--radius);
+    transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+  }
+  .nav-link:hover { color: var(--brand); background: var(--brand-tint); }
+  .nav-link[aria-current='page'] { color: var(--brand); font-weight: 600; }
+
+  .caret { width: 10px; height: 10px; transition: transform 0.25s var(--ease-out); }
+
+  /* --- services dropdown --- */
+  .has-drop { position: relative; }
+
+  .drop {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 50%;
+    translate: -50% 0;
+    width: min(46rem, 82vw);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.22s var(--ease-out), transform 0.22s var(--ease-out),
+      visibility 0.22s;
+  }
+  .has-drop:hover .drop,
+  .has-drop:focus-within .drop {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .has-drop:hover .caret,
+  .has-drop:focus-within .caret { transform: rotate(180deg); }
+
+  .drop-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.15rem;
+    padding: 0.6rem;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    box-shadow: 0 18px 50px -20px rgb(12 51 39 / 0.28);
+  }
+
+  .drop-item {
+    display: block;
+    padding: 0.7rem 0.85rem;
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: background 0.18s var(--ease-out);
+  }
+  .drop-item:hover { background: var(--brand-tint); }
+  .drop-title {
+    display: block;
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 0.1rem;
+  }
+  .drop-sub {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  /* --- right side --- */
+  .hdr-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .lang {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .lang:hover { color: var(--brand); border-color: var(--brand); }
+
+  .hdr-cta {
+    display: none;
+    padding: 0.68em 1.15em;
+    background: var(--brand);
+    color: #fff;
+    font-family: var(--f-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: background 0.25s var(--ease-out);
+  }
+  .hdr-cta:hover { background: var(--brand-deep); }
+  @media (min-width: 1000px) { .hdr-cta { display: inline-block; } }
+
+  /* --- burger --- */
+  .burger {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  @media (min-width: 1000px) { .burger { display: none; } }
+
+  .burger-box {
+    display: grid;
+    gap: 5px;
+    width: 18px;
+  }
+  .burger-box i {
+    display: block;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.3s var(--ease-out), opacity 0.2s;
+  }
+  .burger[aria-expanded='true'] .burger-box i:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+  .burger[aria-expanded='true'] .burger-box i:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* --- mobile menu --- */
+  .mobile {
+    position: fixed;
+    inset: 5rem 0 0;
+    z-index: 99;
+    background: var(--bg);
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out);
+  }
+  .mobile[hidden] { display: none; }
+  .mobile[data-open] { opacity: 1; transform: none; }
+  @media (min-width: 1000px) { .mobile { display: none !important; } }
+
+  .mobile-inner {
+    display: flex;
+    flex-direction: column;
+    padding-block: 2rem 4rem;
+  }
+
+  .m-link {
+    font-family: var(--f-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .m-sub {
+    display: flex;
+    flex-direction: column;
+    padding: 0.85rem 0 0.85rem 1rem;
+    border-bottom: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    margin-left: 0.15rem;
+  }
+  .m-sublink {
+    font-size: 1rem;
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 0.42rem 0;
+  }
+
+  .m-foot {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .m-phone {
+    font-family: var(--f-mono);
+    font-size: 0.95rem;
+    color: var(--brand);
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile]');
+  const header = document.querySelector<HTMLElement>('[data-header]');
+
+  if (burger && menu) {
+    const setOpen = (open: boolean) => {
+      burger.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        menu.hidden = false;
+        // Force a style flush so the transition has a start value. Using a
+        // reflow rather than requestAnimationFrame keeps this working even
+        // when rAF is throttled, which would otherwise leave the menu
+        // technically open but stuck at opacity 0.
+        void menu.offsetHeight;
+        menu.setAttribute('data-open', '');
+      } else {
+        menu.removeAttribute('data-open');
+        setTimeout(() => { menu.hidden = true; }, 280);
+      }
+    };
+
+    burger.addEventListener('click', () => {
+      setOpen(burger.getAttribute('aria-expanded') !== 'true');
+    });
+
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        burger.focus();
+      }
+    });
+  }
+
+  // Solid header once the page has moved off the hero.
+  if (header) {
+    const onScroll = () => {
+      if (window.scrollY > 24) header.setAttribute('data-scrolled', '');
+      else header.removeAttribute('data-scrolled');
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>

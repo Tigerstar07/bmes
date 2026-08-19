@@ -1,0 +1,161 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../PageHeader.astro';
+import ProjectCard from '../ProjectCard.astro';
+import CtaBand from '../CtaBand.astro';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const projects = (await getCollection('projects', (e) => e.data.lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const services = (await getCollection('services', (e) => e.data.lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+/* Only offer filters that actually match something. */
+const used = new Set(projects.flatMap((p) => p.data.services));
+const filters = services.filter((s) => used.has(s.data.key));
+---
+
+<Base
+  lang={lang}
+  title={t('nav.projects')}
+  active="projects"
+  description={t('projects.lead')}
+>
+  <PageHeader
+    eyebrow={t('projects.eyebrow')}
+    title={t('projects.title')}
+    lead={t('projects.lead')}
+  />
+
+  <section class="proj-section">
+    <div class="wrap">
+      <div class="filters" role="group" aria-label={t('projects.filter')}>
+        <button class="filt is-on" type="button" data-filter="all">
+          {t('projects.all')}
+          <span class="filt-n tnum">{projects.length}</span>
+        </button>
+        {
+          filters.map((s) => (
+            <button class="filt" type="button" data-filter={s.data.key}>
+              {s.data.title}
+              <span class="filt-n tnum">
+                {projects.filter((p) => p.data.services.includes(s.data.key)).length}
+              </span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="proj-grid" data-stagger data-grid>
+        {
+          projects.map((p) => (
+            <div class="proj-item" data-services={p.data.services.join(' ')}>
+              <ProjectCard
+                lang={lang}
+                pid={p.data.pid}
+                title={p.data.title}
+                location={p.data.location}
+                year={p.data.year}
+                scope={p.data.scope}
+                area={p.data.area}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="empty" data-empty hidden>{t('projects.none')}</p>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  .proj-section { padding-bottom: clamp(4rem, 8vw, 7rem); }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .filt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.55em 1em;
+    background: transparent;
+    border: 1px solid var(--line-2);
+    border-radius: 100px;
+    font-family: var(--f-display);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 0.22s var(--ease-out), border-color 0.22s var(--ease-out),
+      color 0.22s var(--ease-out);
+  }
+  .filt:hover { border-color: var(--brand); color: var(--brand); }
+  .filt.is-on {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+  }
+
+  .filt-n {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    opacity: 0.6;
+  }
+
+  .proj-grid {
+    display: grid;
+    gap: 2.5rem 2rem;
+  }
+  @media (min-width: 700px) { .proj-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1040px) { .proj-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .proj-item { transition: opacity 0.3s var(--ease-out); }
+  .proj-item[hidden] { display: none; }
+
+  .empty {
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLElement>('.proj-item');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.filter ?? 'all';
+
+      buttons.forEach((b) => b.classList.toggle('is-on', b === btn));
+
+      let shown = 0;
+      items.forEach((item) => {
+        const tags = (item.dataset.services ?? '').split(' ');
+        const match = key === 'all' || tags.includes(key);
+        item.hidden = !match;
+        if (match) shown++;
+      });
+
+      if (empty) empty.hidden = shown > 0;
+    });
+  });
+</script>

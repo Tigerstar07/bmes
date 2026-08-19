@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import { useTranslations, route } from '../i18n/utils';
+
+/* One 404 serves both languages, since the visitor may have arrived from
+   either, so both routes home are offered. */
+const t = useTranslations('lv');
+---
+
+<Base lang="lv" title={t('404.title')} description={t('404.lead')}>
+  <section class="nf">
+    <div class="wrap">
+      <p class="code tnum" aria-hidden="true">404</p>
+      <h1>{t('404.title')}</h1>
+      <p class="lead">{t('404.lead')}</p>
+
+      <div class="nf-actions">
+        <a class="btn" href={route('lv', 'home')}>{t('404.back')}</a>
+        <a class="btn btn-ghost" href={route('en', 'home')}>Back to home (EN)</a>
+      </div>
+
+      <hr class="rule nf-rule" />
+
+      <nav class="nf-links" aria-label={t('nav.menu')}>
+        <a href={route('lv', 'services')}>{t('nav.services')}</a>
+        <a href={route('lv', 'projects')}>{t('nav.projects')}</a>
+        <a href={route('lv', 'contact')}>{t('nav.contact')}</a>
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    align-items: center;
+    min-height: 62vh;
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .code {
+    font-family: var(--f-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+    color: var(--accent-ink);
+    margin-bottom: 1.25rem;
+  }
+
+  h1 { font-size: var(--t-h1); max-width: 14ch; }
+  .lead { margin-top: 1.25rem; }
+
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .nf-rule { margin-top: 3rem; }
+
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    margin-top: 1.5rem;
+  }
+  .nf-links a {
+    font-family: var(--f-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+  .nf-links a:hover { color: var(--brand); }
+</style>

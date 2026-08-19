@@ -1,0 +1,259 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../PageHeader.astro';
+import ProjectCard from '../ProjectCard.astro';
+import CtaBand from '../CtaBand.astro';
+import Placeholder from '../Placeholder.astro';
+import type { Lang, ServiceKey } from '../../i18n/ui';
+import { useTranslations, route, servicePath } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'services'>;
+}
+
+const { lang, entry } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(entry);
+const key = entry.data.key as ServiceKey;
+
+/* Projects tagged with this service. */
+const related = (
+  await getCollection(
+    'projects',
+    (e) => e.data.lang === lang && e.data.services.includes(key),
+  )
+)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+/* Next service in the list, so a visitor can keep browsing. */
+const all = (await getCollection('services', (e) => e.data.lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const idx = all.findIndex((s) => s.data.key === key);
+const next = all[(idx + 1) % all.length];
+---
+
+<Base
+  lang={lang}
+  title={entry.data.title}
+  active="services"
+  description={entry.data.short}
+  serviceKey={key}
+>
+  <PageHeader
+    eyebrow={t('services.eyebrow')}
+    title={entry.data.title}
+    lead={entry.data.summary}
+    backHref={route(lang, 'services')}
+    backLabel={t('services.all')}
+  />
+
+  <!-- intro prose + what it covers -->
+  <section class="svc-body">
+    <div class="wrap svc-grid">
+      <div class="prose svc-prose" data-reveal>
+        <Content />
+      </div>
+
+      <aside class="covers" data-reveal style="--reveal-delay: 90ms">
+        <h2 class="label">{t('services.whatWeDo')}</h2>
+        <ul>
+          {entry.data.covers.map((c) => (
+            <li>
+              <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- wide image -->
+  <section class="svc-media">
+    <div class="wrap" data-reveal>
+      <Placeholder label={entry.data.title} ratio="21 / 9" parallax dark />
+    </div>
+  </section>
+
+  <!-- process: a genuine sequence, so it is genuinely numbered -->
+  {
+    entry.data.process.length > 0 && (
+      <section class="section section-sunken">
+        <div class="wrap">
+          <p class="label" data-reveal>{t('services.process')}</p>
+          <ol class="steps" data-stagger>
+            {entry.data.process.map((step, i) => (
+              <li class="step" data-reveal>
+                <span class="step-n tnum" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="step-t">{step.title}</h3>
+                <p class="step-d">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- related projects -->
+  {
+    related.length > 0 && (
+      <section class="section">
+        <div class="wrap">
+          <p class="label" data-reveal>{t('services.related')}</p>
+          <div class="rel-grid" data-stagger>
+            {related.map((p) => (
+              <ProjectCard
+                lang={lang}
+                pid={p.data.pid}
+                title={p.data.title}
+                location={p.data.location}
+                year={p.data.year}
+                scope={p.data.scope}
+                area={p.data.area}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- next service -->
+  <section class="next-band">
+    <a class="next-link wrap" href={servicePath(lang, next.data.key as ServiceKey)}>
+      <span class="label">{t('services.next')}</span>
+      <span class="next-title">{next.data.title}</span>
+      <svg class="next-arrow" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  .svc-body { padding-block: clamp(2.5rem, 5vw, 4rem); }
+
+  .svc-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .svc-grid { grid-template-columns: 1.15fr 0.85fr; gap: 4.5rem; align-items: start; }
+  }
+
+  .svc-prose :global(p) { font-size: 1.08rem; line-height: 1.7; }
+
+  .covers h2 { margin-bottom: 1.25rem; }
+  .covers ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .covers li {
+    display: grid;
+    grid-template-columns: 1.15rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .covers li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .tick { width: 1.15rem; height: 1.15rem; color: var(--accent-ink); margin-top: 0.15rem; }
+
+  .svc-media { padding-block: clamp(2rem, 4vw, 3.5rem); }
+
+  /* --- process steps --- */
+  .steps {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+    counter-reset: step;
+  }
+  @media (min-width: 700px) { .steps { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; } }
+  @media (min-width: 1080px) { .steps { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+
+  .step { padding-top: 1.15rem; border-top: 1px solid var(--line-2); }
+  .step-n {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--accent-ink);
+  }
+  .step-t { font-size: 1.1rem; margin-top: 0.7rem; letter-spacing: -0.025em; }
+  .step-d {
+    margin-top: 0.55rem;
+    font-size: var(--t-sm);
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  /* --- related --- */
+  .rel-grid {
+    display: grid;
+    gap: 2.25rem 2rem;
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 700px) { .rel-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1040px) { .rel-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  /* --- next service --- */
+  .next-band { border-top: 1px solid var(--line); }
+  /* Grid rather than a flex row: on a phone the mono label plus a long
+     service name plus the arrow cannot sit on one line, so the label
+     moves to its own row instead of forcing the page to scroll sideways. */
+  .next-link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'label label'
+      'title arrow';
+    gap: 0.6rem 1rem;
+    align-items: center;
+    padding-block: clamp(2rem, 4vw, 3rem);
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.25s var(--ease-out);
+  }
+  @media (min-width: 760px) {
+    .next-link {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'label title arrow';
+      gap: 1.5rem;
+    }
+  }
+
+  .next-link .label { grid-area: label; }
+  .next-title {
+    grid-area: title;
+    min-width: 0;
+    font-family: var(--f-display);
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .next-arrow {
+    grid-area: arrow;
+    width: 2rem;
+    height: 2rem;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .next-link:hover { color: var(--brand); }
+  .next-link:hover .next-arrow { transform: translateX(8px); }
+</style>

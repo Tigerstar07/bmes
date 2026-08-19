@@ -1,0 +1,69 @@
+---
+import { company, type Lang } from '../i18n/ui';
+import { useTranslations, route } from '../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="section section-invert cta">
+  <div class="wrap cta-inner">
+    <div class="cta-text">
+      <h2 data-reveal>{t('cta.title')}</h2>
+      <p class="lead" data-reveal style="--reveal-delay: 70ms">{t('cta.lead')}</p>
+    </div>
+    <div class="cta-actions" data-reveal style="--reveal-delay: 140ms">
+      <a class="btn cta-btn" href={route(lang, 'contact')}>
+        {t('cta.button')}
+        <svg class="arrow" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+      <a class="cta-phone" href={`tel:${company.phoneHref}`}>{company.phone}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-inner {
+    display: grid;
+    gap: 2.5rem;
+    align-items: end;
+  }
+  @media (min-width: 900px) {
+    .cta-inner { grid-template-columns: 1.5fr 1fr; gap: 4rem; }
+  }
+
+  .cta h2 {
+    font-size: var(--t-h2);
+    max-width: 16ch;
+  }
+  .cta .lead { margin-top: 1rem; }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .cta-actions { align-items: flex-end; }
+  }
+
+  .cta-btn {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--bg-invert);
+  }
+  .cta-btn:hover { --btn-bg: var(--accent-lift); }
+  .cta-btn .arrow { width: 18px; height: 18px; }
+
+  .cta-phone {
+    font-family: var(--f-mono);
+    font-size: 1rem;
+    color: var(--on-invert-2);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-out);
+  }
+  .cta-phone:hover { color: var(--on-invert); }
+</style>

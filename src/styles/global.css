@@ -1,0 +1,457 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   BMES design tokens
+   Direction: "Modern Pine". Deep pine green anchor, clean cool
+   neutrals, one jade accent. No warm sand, no brass, so the
+   palette stays crisp rather than traditional.
+   ============================================================ */
+
+:root {
+  /* --- surfaces --- */
+  --bg:          #F7F8F5;  /* clean off-white, faint green cast */
+  --bg-elev:     #FFFFFF;
+  --bg-sunken:   #ECEFE9;
+  --bg-invert:   #0C2A20;  /* deep field for dark sections */
+
+  /* --- text --- */
+  --ink:         #0E1A15;
+  --ink-2:       #33403A;
+  --muted:       #5C6A62;  /* 5.33:1 on --bg */
+  --on-invert:   #E8F0EB;
+  --on-invert-2: #A9BDB2;  /* 7.76:1 on --bg-invert */
+
+  /* --- brand --- */
+  --brand:       #12503A;  /* deep pine, primary */
+  --brand-deep:  #0C3327;
+  --brand-tint:  #E4EFE9;
+  --accent:      #37A277;  /* clean jade, for dark surfaces: 4.83:1 there */
+  /* Same hue darkened for text on light. Tuned against --bg-sunken, the
+     darker of the two light grounds, so it clears 4.5:1 on both:
+     5.30:1 on --bg, 4.87:1 on --bg-sunken. */
+  --accent-ink:  #1A7554;
+  --accent-lift: #45B487;
+
+  /* --- lines --- */
+  --line:        #DFE4DB;
+  --line-2:      #C4CCC0;
+  --line-invert: #234A3B;
+
+  /* --- type --- */
+  --f-display: var(--font-display);
+  --f-body:    var(--font-body);
+  --f-mono:    var(--font-mono);
+
+  /* --- fluid type scale --- */
+  /* Min is 2.35rem so the longest Latvian headline word still fits on one
+     line inside the hero's reveal mask on a 320px phone. */
+  --t-hero:  clamp(2.35rem, 7.5vw, 6rem);
+  --t-h1:    clamp(2rem, 5.2vw, 3.75rem);
+  --t-h2:    clamp(1.75rem, 3.6vw, 2.65rem);
+  --t-h3:    clamp(1.25rem, 2vw, 1.5rem);
+  --t-lead:  clamp(1.1rem, 1.6vw, 1.3rem);
+  --t-body:  1.0625rem;
+  --t-sm:    0.9375rem;
+  --t-label: 0.75rem;
+
+  /* --- layout --- */
+  --wrap:    78rem;
+  --wrap-nar: 52rem;
+  --gutter:  clamp(1.25rem, 4vw, 3.5rem);
+  --sec-y:   clamp(4.5rem, 9vw, 9rem);
+
+  /* --- motion --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io:  cubic-bezier(0.65, 0, 0.35, 1);
+  --dur:      0.7s;
+
+  --radius:   4px;
+}
+
+/* Very small phones (320px). Latvian headlines need one more step down
+   than English does at this width. */
+@media (max-width: 360px) {
+  :root { --t-hero: 2rem; }
+}
+
+/* ============================================================
+   base
+   ============================================================ */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  /* 1.08 rather than a tighter figure: Latvian stacks macrons (ā ē ī ū)
+     above the cap line and cedillas (ģ ķ ļ ņ) below it, so headings need
+     more vertical room than the same design would in English. */
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0;
+  text-wrap: balance;
+  /* Latvian compounds get long ("Inženierkomunikācijas" is 21 characters).
+     Hyphenate where the browser can, break as a last resort, so a single
+     word can never spill out of its column on a narrow screen. */
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a { color: inherit; }
+
+button { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--brand);
+  color: #fff;
+}
+
+/* ============================================================
+   layout helpers
+   ============================================================ */
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.wrap-narrow {
+  width: 100%;
+  max-width: var(--wrap-nar);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section { padding-block: var(--sec-y); }
+
+.section-invert {
+  background: var(--bg-invert);
+  color: var(--on-invert);
+}
+.section-invert h1,
+.section-invert h2,
+.section-invert h3 { color: var(--on-invert); }
+
+.section-sunken { background: var(--bg-sunken); }
+
+/* ============================================================
+   type utilities
+   ============================================================ */
+
+.label {
+  font-family: var(--f-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.section-invert .label { color: var(--on-invert-2); }
+
+.label-accent { color: var(--accent); }
+
+.lead {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+.section-invert .lead { color: var(--on-invert-2); }
+
+.prose p { margin-bottom: 1.15em; max-width: 62ch; }
+.prose p:last-child { margin-bottom: 0; }
+.prose h2 { font-size: var(--t-h2); margin: 2em 0 0.6em; }
+.prose h3 { font-size: var(--t-h3); margin: 1.8em 0 0.5em; }
+.prose ul { margin: 0 0 1.15em; padding-left: 1.1rem; max-width: 62ch; }
+.prose li { margin-bottom: 0.4em; }
+.prose li::marker { color: var(--accent-ink); }
+.prose strong { font-weight: 600; }
+
+/* rule that reads as a drawing line, not a border */
+.rule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+.section-invert .rule { background: var(--line-invert); }
+
+/* ============================================================
+   buttons
+   ============================================================ */
+
+.btn {
+  --btn-bg: var(--brand);
+  --btn-fg: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  padding: 0.95em 1.6em;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--f-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  border: 1px solid var(--btn-bg);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out),
+              transform 0.25s var(--ease-out);
+}
+.btn:hover {
+  --btn-bg: var(--brand-deep);
+  transform: translateY(-2px);
+}
+.btn .arrow { transition: transform 0.3s var(--ease-out); }
+.btn:hover .arrow { transform: translateX(4px); }
+
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--line-2);
+}
+.btn-ghost:hover {
+  --btn-bg: transparent;
+  --btn-fg: var(--brand);
+  border-color: var(--brand);
+}
+
+.section-invert .btn-ghost {
+  --btn-fg: var(--on-invert);
+  border-color: var(--line-invert);
+}
+.section-invert .btn-ghost:hover {
+  --btn-fg: var(--bg-invert);
+  --btn-bg: var(--on-invert);
+  border-color: var(--on-invert);
+}
+
+/* text link with an underline that draws in */
+.link-draw {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--brand);
+  text-decoration: none;
+  padding-bottom: 2px;
+  background-image: linear-gradient(var(--accent-ink), var(--accent-ink));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 0.4s var(--ease-out);
+}
+.link-draw:hover { background-size: 100% 1.5px; }
+.section-invert .link-draw { color: var(--accent-lift); }
+
+/* ============================================================
+   motion: native, no library
+   Reveals use CSS scroll-driven animations where the browser
+   supports them (compositor-threaded, zero JS). Everything else
+   falls back to a 1 KB IntersectionObserver in motion.js.
+   ============================================================ */
+
+/* Content is visible by default. The hiding rules below only apply once
+   the inline head script has added `.js-motion`, so a script error, a
+   blocked bundle or JS switched off can never leave the page blank.
+   the worst case is that content simply appears without animating. */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  .js-motion [data-reveal] {
+    opacity: 0;
+    transform: translateY(var(--reveal-y, 22px));
+    transition:
+      opacity var(--dur) var(--ease-out) var(--reveal-delay, 0s),
+      transform var(--dur) var(--ease-out) var(--reveal-delay, 0s);
+    will-change: opacity, transform;
+  }
+
+  .js-motion [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* stagger: children pick their own delay off --i */
+  [data-stagger] > * {
+    --reveal-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  /* masked line-by-line headline reveal */
+  .reveal-lines .line {
+    display: block;
+    overflow: hidden;
+    /* The mask is overflow:hidden, so it needs headroom for ascenders,
+       descenders and Latvian macrons. Pulled back by the same amount so
+       the visual line spacing is unchanged. */
+    padding-block: 0.16em;
+    margin-block: -0.16em;
+  }
+  .js-motion .reveal-lines .line > span {
+    display: block;
+    transform: translateY(105%);
+    transition: transform 0.9s var(--ease-out) calc(var(--i, 0) * 90ms);
+    will-change: transform;
+  }
+  .js-motion .reveal-lines.is-in .line > span { transform: none; }
+
+  /* slow parallax drift on media, driven by scroll position itself */
+  @supports (animation-timeline: view()) {
+    .parallax-media img,
+    .parallax-media .ph {
+      animation: drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+    @keyframes drift {
+      from { transform: scale(1.12) translateY(-2.5%); }
+      to   { transform: scale(1.12) translateY(2.5%); }
+    }
+  }
+}
+
+/* Reduced motion: everything is simply present. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-reveal],
+  .reveal-lines .line > span { opacity: 1; transform: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   page transitions (View Transitions API)
+   ============================================================ */
+
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: vt-out 0.28s var(--ease-io) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 0.42s var(--ease-out) both;
+  }
+  @keyframes vt-out {
+    to { opacity: 0; transform: translateY(-8px); }
+  }
+  @keyframes vt-in {
+    from { opacity: 0; transform: translateY(12px); }
+  }
+}
+
+/* ============================================================
+   photo placeholders, replaced when Jānis sends images
+   ============================================================ */
+
+.ph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      var(--ph-a, #DDE5DF) 0 2px,
+      transparent 2px 11px
+    ),
+    linear-gradient(160deg, var(--ph-b, #C9D6CE), var(--ph-c, #E7EDE8));
+  color: var(--brand);
+  overflow: hidden;
+}
+.ph::after {
+  content: attr(data-ph);
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--brand) 55%, transparent);
+  padding: 0.4em 0.8em;
+  border: 1px solid color-mix(in oklab, var(--brand) 25%, transparent);
+  border-radius: 2px;
+  text-align: center;
+  max-width: 80%;
+}
+.ph-dark {
+  --ph-a: #1B4235;
+  --ph-b: #10352A;
+  --ph-c: #1E4C3C;
+  color: var(--accent);
+}
+.ph-dark::after {
+  color: color-mix(in oklab, var(--accent) 75%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+/* ============================================================
+   misc
+   ============================================================ */
+
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* The header is fixed, so anchor targets need clearance or they land
+   underneath it. Applies to the skip link and any future in-page anchor. */
+:target,
+#main { scroll-margin-top: 6.5rem; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  background: var(--brand);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--f-display);
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}

@@ -1,0 +1,132 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../PageHeader.astro';
+import { company, type Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const copy = {
+  lv: {
+    title: 'Privātuma politika',
+    lead: 'Kādus datus apstrādājam, kāpēc un cik ilgi.',
+    updated: 'Pēdējoreiz atjaunots',
+    sections: [
+      {
+        h: 'Pārzinis',
+        p: [`Jūsu datu pārzinis ir ${company.legalName}, reģistrācijas numurs ${company.regNr}, adrese: ${company.street}, ${company.city}, ${company.postalCode}. Jautājumu gadījumā rakstiet uz ${company.email}.`],
+      },
+      {
+        h: 'Kādus datus vācam',
+        p: [
+          'Apstrādājam tikai tos datus, ko jūs iesniedzat kontaktformā: vārdu, e-pasta adresi, tālruņa numuru (ja to norādāt) un pieprasījuma tekstu.',
+          'Mājaslapa neizmanto sīkdatnes reklāmām vai profilēšanai. Apmeklējumu statistiku vācam anonimizēti, bez sīkdatnēm un bez iespējas identificēt konkrētu apmeklētāju.',
+        ],
+      },
+      {
+        h: 'Kāpēc tos apstrādājam',
+        p: ['Vienīgais mērķis ir atbildēt uz jūsu pieprasījumu un, ja no tā izriet sadarbība, sagatavot piedāvājumu. Datus neizmantojam mārketinga sūtījumiem, ja neesat to atsevišķi lūguši.'],
+      },
+      {
+        h: 'Cik ilgi glabājam',
+        p: ['Pieprasījumus glabājam divus gadus no saziņas beigām. Ja no pieprasījuma izriet līgums, ar to saistītos dokumentus glabājam tik ilgi, cik nosaka grāmatvedības un būvniecības normatīvie akti.'],
+      },
+      {
+        h: 'Kam datus nododam',
+        p: ['Datus nenododam trešajām pusēm mārketinga nolūkos. Tehniski datu apstrādē iesaistīti mūsu e-pasta un mājaslapas mitināšanas pakalpojumu sniedzēji, kas darbojas kā datu apstrādātāji Eiropas Savienībā.'],
+      },
+      {
+        h: 'Jūsu tiesības',
+        p: [`Jums ir tiesības pieprasīt piekļuvi saviem datiem, to labošanu vai dzēšanu, kā arī iebilst pret apstrādi. Rakstiet uz ${company.email}. Ja uzskatāt, ka dati apstrādāti nepamatoti, varat vērsties Datu valsts inspekcijā.`],
+      },
+    ],
+    note: 'Šis ir sagatavots paraugteksts. Pirms publicēšanas tas jāpārskata uzņēmuma pārstāvim un, ja nepieciešams, juristam.',
+  },
+  en: {
+    title: 'Privacy policy',
+    lead: 'What data we process, why, and for how long.',
+    updated: 'Last updated',
+    sections: [
+      {
+        h: 'Controller',
+        p: [`The controller of your data is ${company.legalName}, registration number ${company.regNr}, address: ${company.street}, ${company.city}, ${company.postalCode}. For any questions, write to ${company.email}.`],
+      },
+      {
+        h: 'What we collect',
+        p: [
+          'We process only the data you submit yourself through the contact form: your name, email address, phone number (if you provide one) and the text of your enquiry.',
+          'The site does not use cookies for advertising or profiling. Visit statistics are collected anonymously, without cookies, and cannot identify an individual visitor.',
+        ],
+      },
+      {
+        h: 'Why we process it',
+        p: ['The sole purpose is to answer your enquiry and, if it leads to work, to prepare a proposal. We do not use these details for marketing unless you have separately asked us to.'],
+      },
+      {
+        h: 'How long we keep it',
+        p: ['Enquiries are kept for two years from the end of the correspondence. If an enquiry leads to a contract, the related documents are kept for as long as accounting and construction legislation requires.'],
+      },
+      {
+        h: 'Who we share it with',
+        p: ['We do not pass data to third parties for marketing. Technically, our email and website hosting providers are involved as data processors, operating within the European Union.'],
+      },
+      {
+        h: 'Your rights',
+        p: [`You have the right to request access to your data, its correction or deletion, and to object to processing. Write to ${company.email}. If you believe your data has been processed unlawfully, you may contact the Latvian Data State Inspectorate.`],
+      },
+    ],
+    note: 'This is a prepared template. It should be reviewed by the company and, if needed, by a lawyer before publication.',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} active="privacy" description={copy.lead}>
+  <PageHeader eyebrow={t('footer.privacy')} title={copy.title} lead={copy.lead} />
+
+  <section class="policy">
+    <div class="wrap-narrow">
+      <p class="updated">{copy.updated}: 19.08.2026</p>
+
+      <div class="prose">
+        {
+          copy.sections.map((s, i) => (
+            <div class="pol-sec" data-reveal style={`--reveal-delay: ${i * 40}ms`}>
+              <h2>{s.h}</h2>
+              {s.p.map((p) => <p>{p}</p>)}
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="note">{copy.note}</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .policy { padding-bottom: clamp(4rem, 8vw, 7rem); }
+
+  .updated {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+  }
+
+  .pol-sec + .pol-sec { margin-top: 2.25rem; }
+  .pol-sec :global(h2) { font-size: 1.2rem; margin: 0 0 0.7rem; }
+
+  .note {
+    margin-top: 3rem;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid var(--accent);
+    background: var(--brand-tint);
+    color: var(--brand);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../PageHeader.astro';
+import ServiceList from '../ServiceList.astro';
+import CtaBand from '../CtaBand.astro';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Base
+  lang={lang}
+  title={t('nav.services')}
+  active="services"
+  description={t('services.lead')}
+>
+  <PageHeader
+    eyebrow={t('services.eyebrow')}
+    title={t('services.title')}
+    lead={t('services.lead')}
+  />
+
+  <section class="svc-section">
+    <div class="wrap">
+      <ServiceList lang={lang} />
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  .svc-section { padding-bottom: clamp(4rem, 8vw, 7rem); }
+</style>

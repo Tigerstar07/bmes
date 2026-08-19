@@ -1,0 +1,139 @@
+---
+import { getCollection } from 'astro:content';
+import Placeholder from './Placeholder.astro';
+import type { Lang, ServiceKey } from '../i18n/ui';
+import { useTranslations, servicePath } from '../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const services = (await getCollection('services', (e) => e.data.lang === lang)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<ul class="svc-list" data-stagger>
+  {
+    services.map((s) => (
+      <li class="svc-row" data-reveal>
+        <a class="svc-link" href={servicePath(lang, s.data.key as ServiceKey)}>
+          <div class="svc-text">
+            <h3 class="svc-title">{s.data.title}</h3>
+            <p class="svc-short">{s.data.short}</p>
+          </div>
+
+          <div class="svc-thumb" aria-hidden="true">
+            <Placeholder label={s.data.title} ratio="4 / 3" />
+          </div>
+
+          <span class="svc-go" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span class="sr-only">{t('services.more')}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .svc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .svc-row { border-bottom: 1px solid var(--line); }
+
+  .svc-link {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3.5vw, 2.6rem) 0;
+    text-decoration: none;
+    color: inherit;
+    transition: padding-inline 0.4s var(--ease-out);
+  }
+
+  /* Grid children default to min-width:auto, which refuses to shrink below
+     the longest word. Without this, "Inženierkomunikācijas" pushes the
+     arrow off the edge on a 320px screen instead of breaking. */
+  .svc-text { min-width: 0; }
+
+  .svc-title {
+    font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .svc-short {
+    margin-top: 0.5rem;
+    max-width: 46ch;
+    color: var(--muted);
+    font-size: var(--t-sm);
+    line-height: 1.55;
+  }
+
+  .svc-go {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    flex: 0 0 auto;
+    border: 1px solid var(--line-2);
+    border-radius: 50%;
+    color: var(--ink-2);
+    transition: background 0.3s var(--ease-out), border-color 0.3s var(--ease-out),
+      color 0.3s var(--ease-out), transform 0.35s var(--ease-out);
+  }
+  .svc-go svg { width: 20px; height: 20px; }
+
+  /* Thumbnail sits out of flow and only appears on pointer hover. */
+  .svc-thumb {
+    position: absolute;
+    top: 50%;
+    right: 6rem;
+    width: 15rem;
+    translate: 0 -50%;
+    opacity: 0;
+    scale: 0.94;
+    rotate: -2deg;
+    pointer-events: none;
+    display: none;
+    transition: opacity 0.4s var(--ease-out), scale 0.5s var(--ease-out),
+      rotate 0.5s var(--ease-out);
+    box-shadow: 0 24px 60px -24px rgb(12 51 39 / 0.4);
+  }
+
+  @media (hover: hover) and (min-width: 900px) {
+    .svc-thumb { display: block; }
+
+    .svc-link:hover { padding-inline: 1.75rem; }
+    .svc-link:hover .svc-title { color: var(--brand); }
+    .svc-link:hover .svc-thumb { opacity: 1; scale: 1; rotate: 0deg; }
+    .svc-link:hover .svc-go {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+      transform: translateX(4px);
+    }
+  }
+
+  .svc-link:focus-visible { outline-offset: -2px; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

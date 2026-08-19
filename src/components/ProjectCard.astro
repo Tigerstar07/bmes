@@ -1,0 +1,109 @@
+---
+import Placeholder from './Placeholder.astro';
+import type { Lang } from '../i18n/ui';
+import { projectPath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  pid: string;
+  title: string;
+  location: string;
+  year: number;
+  scope: string;
+  area?: string;
+  /** Large cards get a wider image and bigger type. */
+  feature?: boolean;
+}
+
+const { lang, pid, title, location, year, scope, area, feature = false } = Astro.props;
+---
+
+<article class:list={['card', feature && 'card-feature']} data-reveal>
+  <a class="card-link" href={projectPath(lang, pid)}>
+    <div class="card-media">
+      <Placeholder label={title} ratio={feature ? '16 / 10' : '4 / 3'} parallax />
+      <span class="card-year tnum">{year}</span>
+    </div>
+    <div class="card-body">
+      <h3 class="card-title">{title}</h3>
+      <p class="card-meta">
+        <span>{location}</span>
+        {area && <><span class="dot" aria-hidden="true">·</span><span class="tnum">{area}</span></>}
+      </p>
+      <p class="card-scope">{scope}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card { height: 100%; }
+
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-media {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .card-media :global(.ph-wrap) {
+    transition: scale 0.6s var(--ease-out);
+  }
+  .card-link:hover .card-media :global(.ph-wrap) { scale: 1.03; }
+
+  .card-year {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 2;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    padding: 0.35em 0.7em;
+    background: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: blur(6px);
+    color: var(--brand);
+    border-radius: 2px;
+  }
+
+  .card-body { padding-top: 1.15rem; }
+
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    transition: color 0.25s var(--ease-out);
+  }
+  .card-link:hover .card-title { color: var(--brand); }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    font-family: var(--f-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dot { opacity: 0.6; }
+
+  .card-scope {
+    margin-top: 0.7rem;
+    font-size: var(--t-sm);
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 44ch;
+  }
+
+  /* --- feature variant --- */
+  .card-feature .card-title { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+  .card-feature .card-body { padding-top: 1.4rem; }
+</style>

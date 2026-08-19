@@ -1,0 +1,308 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ServiceList from '../ServiceList.astro';
+import ProjectCard from '../ProjectCard.astro';
+import CtaBand from '../CtaBand.astro';
+import Placeholder from '../Placeholder.astro';
+import { company, type Lang } from '../../i18n/ui';
+import { useTranslations, route } from '../../i18n/utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const featured = (await getCollection('projects', (e) => e.data.lang === lang && e.data.featured))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+const stats = [
+  { value: 180, suffix: '+', label: t('stats.projects') },
+  { value: 14, suffix: '', label: t('stats.years') },
+  { value: 96000, suffix: '', label: t('stats.area') },
+  { value: 32, suffix: '', label: t('stats.team') },
+];
+
+const intro =
+  lang === 'lv'
+    ? 'BMES ir būvuzņēmums, kurā projektētājs, būvnieks un uzturētājs strādā vienā komandā. Tas nozīmē vienu atbildīgo par visu ceļu, no pirmās skices līdz brīdim, kad ēka jau gadus darbojas.'
+    : 'BMES is a construction company where the designer, the builder and the people who maintain the building work on one team. That means a single accountable party for the whole route, from the first sketch to years after the building is in use.';
+---
+
+<Base lang={lang} title={company.name} active="home" flush>
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-top">
+      <p class="label hero-eyebrow" data-reveal>{t('hero.eyebrow')}</p>
+
+      <h1 class="hero-title reveal-lines">
+        <span class="line"><span>{t('hero.line1')}</span></span>
+        <span class="line"><span class="hero-accent">{t('hero.line2')}</span></span>
+      </h1>
+
+      <div class="hero-aside">
+        <p class="lead" data-reveal style="--reveal-delay: 320ms">{t('hero.lead')}</p>
+        <div class="hero-actions" data-reveal style="--reveal-delay: 400ms">
+          <a class="btn" href={route(lang, 'contact')}>
+            {t('hero.cta')}
+            <svg class="arrow" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+          <a class="btn btn-ghost" href={route(lang, 'projects')}>{t('hero.cta2')}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-media" data-reveal style="--reveal-delay: 200ms; --reveal-y: 40px">
+      <Placeholder label={lang === 'lv' ? 'Galvenā bilde: objekts' : 'Hero image: project'} ratio="21 / 9" parallax dark />
+      <div class="hero-scroll" aria-hidden="true">
+        <span class="label">{t('hero.scroll')}</span>
+        <span class="scroll-line"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section class="section intro">
+    <div class="wrap intro-grid">
+      <p class="label" data-reveal>{t('about.eyebrow')}</p>
+      <div class="intro-body">
+        <p class="intro-text" data-reveal>{intro}</p>
+        <a class="link-draw" href={route(lang, 'about')} data-reveal style="--reveal-delay: 80ms">
+          {t('nav.about')}
+          <svg viewBox="0 0 20 20" aria-hidden="true" width="16" height="16">
+            <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section class="section section-sunken">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="label" data-reveal>{t('services.eyebrow')}</p>
+          <h2 data-reveal style="--reveal-delay: 60ms">{t('services.title')}</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-delay: 120ms">{t('services.lead')}</p>
+      </div>
+      <ServiceList lang={lang} />
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="section section-invert stats">
+    <div class="wrap">
+      <p class="label" data-reveal>{t('stats.title')}</p>
+      <dl class="stats-grid" data-stagger>
+        {
+          stats.map((s) => (
+            <div class="stat" data-reveal>
+              <dt class="stat-num tnum">
+                <span data-count={s.value}>0</span>{s.suffix}
+              </dt>
+              <dd class="stat-label">{s.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED PROJECTS ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="label" data-reveal>{t('projects.eyebrow')}</p>
+          <h2 data-reveal style="--reveal-delay: 60ms">{t('projects.title')}</h2>
+        </div>
+        <a class="link-draw sec-head-link" href={route(lang, 'projects')} data-reveal>
+          {t('projects.all')}
+          <svg viewBox="0 0 20 20" aria-hidden="true" width="16" height="16">
+            <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="feat-grid" data-stagger>
+        {
+          featured.map((p, i) => (
+            <div class:list={['feat-item', i === 0 && 'feat-item-lead']}>
+              <ProjectCard
+                lang={lang}
+                pid={p.data.pid}
+                title={p.data.title}
+                location={p.data.location}
+                year={p.data.year}
+                scope={p.data.scope}
+                area={p.data.area}
+                feature={i === 0}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lang={lang} />
+</Base>
+
+<style>
+  /* ---------- hero ---------- */
+  .hero { padding-top: clamp(8rem, 15vw, 12rem); }
+
+  .hero-top {
+    display: grid;
+    gap: 2rem;
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  /* The headline gets the full column width. Putting it beside the lead
+     left it around 620px, which is narrower than "Viens uzņēmums," needs
+     at display size, so the line wrapped inside its own reveal mask. */
+  @media (min-width: 1000px) {
+    .hero-top { gap: 1.5rem; }
+    .hero-aside {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 2rem 4rem;
+      margin-top: 0.75rem;
+    }
+    .hero-actions { margin-top: 0; }
+  }
+
+  .hero-title {
+    font-size: var(--t-hero);
+    /* 0.98 rather than 0.92: at 0.92 the descenders on line one came down
+       onto the macrons in "līdz atslēgai". */
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    margin-top: 1rem;
+  }
+  .hero-accent { color: var(--brand); }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .hero-actions .arrow { width: 18px; height: 18px; }
+
+  .hero-media {
+    position: relative;
+    padding-inline: var(--gutter);
+  }
+  .hero-media :global(.ph-wrap) { border-radius: 6px; }
+
+  .hero-scroll {
+    position: absolute;
+    left: calc(var(--gutter) + 1.75rem);
+    bottom: 1.75rem;
+    display: none;
+    align-items: center;
+    gap: 0.85rem;
+    color: var(--accent-ink);
+  }
+  @media (min-width: 700px) { .hero-scroll { display: flex; } }
+  .hero-scroll .label { color: inherit; }
+
+  .scroll-line {
+    display: block;
+    width: 3.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.45;
+    transform-origin: left;
+    animation: scroll-pulse 2.4s var(--ease-io) infinite;
+  }
+  @keyframes scroll-pulse {
+    0%, 100% { transform: scaleX(0.35); opacity: 0.35; }
+    50%      { transform: scaleX(1);    opacity: 0.8; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-line { animation: none; transform: scaleX(1); }
+  }
+
+  /* ---------- intro ---------- */
+  .intro-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 860px) {
+    .intro-grid { grid-template-columns: 14rem 1fr; gap: 3rem; }
+  }
+
+  .intro-text {
+    font-family: var(--f-display);
+    font-size: clamp(1.3rem, 2.5vw, 1.95rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.025em;
+    max-width: 30ch;
+    text-wrap: balance;
+  }
+  .intro-body .link-draw { margin-top: 1.75rem; }
+
+  /* ---------- section heads ---------- */
+  .sec-head {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  @media (min-width: 900px) {
+    .sec-head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+  .sec-head h2 { font-size: var(--t-h2); max-width: 16ch; margin-top: 0.7rem; }
+  .sec-head-link { justify-self: start; }
+  @media (min-width: 900px) { .sec-head-link { justify-self: end; } }
+
+  /* ---------- stats ---------- */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem 1.5rem;
+    margin: 2.5rem 0 0;
+  }
+  @media (min-width: 860px) {
+    .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  }
+
+  .stat {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line-invert);
+  }
+  .stat-num {
+    font-family: var(--f-display);
+    font-size: clamp(2.4rem, 5.5vw, 3.75rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    color: var(--accent);
+  }
+  .stat-label {
+    margin: 0.6rem 0 0;
+    font-size: var(--t-sm);
+    line-height: 1.4;
+    color: var(--on-invert-2);
+  }
+
+  /* ---------- featured grid ---------- */
+  .feat-grid {
+    display: grid;
+    gap: 2.5rem 2rem;
+  }
+  @media (min-width: 760px) {
+    .feat-grid { grid-template-columns: repeat(2, 1fr); }
+    .feat-item-lead { grid-column: 1 / -1; }
+  }
+</style>
