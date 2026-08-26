@@ -13,8 +13,8 @@ covers:
   - "Viedās mājas risinājumi un automatizācija"
   - "Ugunsdrošības un vājstrāvas sistēmas"
 photo:
-  src: "../../../assets/photos/03-transeja-izbuve-3x2.jpg"
-  alt: "Tranšejas izbūve ūdensapgādes un kanalizācijas ievadiem"
+  src: "../../../assets/photos/utility-trench-hq.jpg"
+  alt: "Ūdensapgādes un kanalizācijas cauruļvadi sagatavotā tranšejā"
 process:
   - title: "Aprēķins"
     body: "Sākam ar siltuma zudumu un gaisa apmaiņas aprēķinu, nevis ar iekārtu katalogu."

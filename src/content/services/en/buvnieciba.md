@@ -13,8 +13,8 @@ covers:
   - "Site management and coordination of supervision"
   - "Documentation and commissioning"
 photo:
-  src: "../../../assets/photos/02-ekskavators-gruntsdarbi-3x2.jpg"
-  alt: "A mini excavator levelling the site during groundworks"
+  src: "../../../assets/photos/foundation-preparation-hq.jpg"
+  alt: "Foundation formwork and reinforcement prepared on a residential building site"
 process:
   - title: "Site visit and estimate"
     body: "We come out, walk the scope with you and produce an estimate with realistic figures rather than optimistic ones."

@@ -102,8 +102,8 @@ navigation, footer, sitemap, hreflang tags and language switcher together.
 
 ## Before launch
 
-1. **More photographs.** Three real photos are in. The remaining slots are still labelled
-   placeholders (`src/components/Placeholder.astro`) — see "Photos" below for how to add more.
+1. **More photographs.** Five production-ready site visuals are in. Some unrelated project and
+   service slots still use labelled placeholders (`src/components/Placeholder.astro`).
 2. **Company details.** `company` in `src/i18n/ui.ts` is placeholder data — real registration
    number, address and phone are needed.
 3. **Domain.** Set `SITE` in `astro.config.mjs`, and the sitemap URL in `public/robots.txt`.
@@ -137,7 +137,7 @@ stops instead. The page title separator is a pipe (`BMES | Būvniecība…`).
 
 ## Photos
 
-Drop originals into `photos/incoming/` and run:
+Drop camera originals into `photos/incoming/` and run:
 
     npm run photos
 
@@ -161,7 +161,8 @@ Two things were measured and rejected, so they don't get retried:
 - **Lowering quality barely helps.** 68 to 50 saved 15%. The cost is the subject —
   mud, gravel and foliage are about the most expensive thing a photo codec can encode.
 
-To swap which photo goes where: the hero is an import at the top of
+The five `*-hq.jpg` website visuals are curated masters and are not rewritten by the camera-photo
+grading script. To swap which photo goes where: the hero is an import at the top of
 `src/components/pages/HomePage.astro`, service photos are a `photo:` block in the
 service markdown, and project photos are `leadPhoto` + `photos` in the project markdown.
 

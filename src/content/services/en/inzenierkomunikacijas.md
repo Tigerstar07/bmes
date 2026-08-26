@@ -13,8 +13,8 @@ covers:
   - "Smart home solutions and automation"
   - "Fire safety and low-voltage systems"
 photo:
-  src: "../../../assets/photos/03-transeja-izbuve-3x2.jpg"
-  alt: "Cutting a trench for the water and drainage connections"
+  src: "../../../assets/photos/utility-trench-hq.jpg"
+  alt: "Water and drainage pipes laid in a prepared utility trench"
 process:
   - title: "Calculation"
     body: "We start with heat loss and air exchange calculations, not with an equipment catalogue."

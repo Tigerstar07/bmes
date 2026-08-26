@@ -13,18 +13,17 @@ services:
   - "inzenierkomunikacijas"
 featured: true
 leadPhoto:
-  src: "../../../assets/photos/03-transeja-izbuve-16x9.jpg"
-  alt: "Tranšejas izbūve komunikāciju ievadiem objektā Pierīgā"
+  src: "../../../assets/photos/excavator-loading-hq.jpg"
+  alt: "Mini ekskavators veic gruntsdarbus objektā Pierīgā"
 photos:
-  - src: "../../../assets/photos/01-operators-kabine.jpg"
+  - src: "../../../assets/photos/hero-excavator-hq.jpg"
     alt: "BMES operators ar mini ekskavatoru veic gruntsdarbus privātmājas teritorijā"
-    focus: "center 45%"
-  - src: "../../../assets/photos/02-ekskavators-gruntsdarbi.jpg"
-    alt: "Mini ekskavators un izraktās grunts kaudze objektā"
-    focus: "center"
-  - src: "../../../assets/photos/03-transeja-izbuve.jpg"
-    alt: "Ekskavatora kauss izrok tranšeju komunikāciju ievadiem"
-    focus: "center 55%"
+  - src: "../../../assets/photos/excavator-digging-hq.jpg"
+    alt: "Mini ekskavators rok grunti apbūvētā privātmājas teritorijā"
+  - src: "../../../assets/photos/utility-trench-hq.jpg"
+    alt: "Ūdensapgādes un kanalizācijas cauruļvadi sagatavotā tranšejā"
+  - src: "../../../assets/photos/foundation-preparation-hq.jpg"
+    alt: "Pamatu veidņi un armatūra pēc grunts sagatavošanas"
 ---
 
 Gruntsdarbi apbūvētā teritorijā ar ierobežotu piekļuvi. Objektā strādājām ar mini ekskavatoru, jo starp esošo apbūvi un kokiem lielākai tehnikai vietas nepietiek.

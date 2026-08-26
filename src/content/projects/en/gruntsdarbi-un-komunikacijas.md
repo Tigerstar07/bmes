@@ -13,18 +13,17 @@ services:
   - "inzenierkomunikacijas"
 featured: true
 leadPhoto:
-  src: "../../../assets/photos/03-transeja-izbuve-16x9.jpg"
-  alt: "Trenching for the utility connections on site"
+  src: "../../../assets/photos/excavator-loading-hq.jpg"
+  alt: "A mini excavator carrying out groundworks in the Riga region"
 photos:
-  - src: "../../../assets/photos/01-operators-kabine.jpg"
+  - src: "../../../assets/photos/hero-excavator-hq.jpg"
     alt: "BMES operator working a mini excavator on a residential groundworks site"
-    focus: "center 45%"
-  - src: "../../../assets/photos/02-ekskavators-gruntsdarbi.jpg"
-    alt: "Mini excavator beside a heap of excavated soil on site"
-    focus: "center"
-  - src: "../../../assets/photos/03-transeja-izbuve.jpg"
-    alt: "Excavator bucket cutting a trench for utility connections"
-    focus: "center 55%"
+  - src: "../../../assets/photos/excavator-digging-hq.jpg"
+    alt: "A mini excavator digging on a built-up residential plot"
+  - src: "../../../assets/photos/utility-trench-hq.jpg"
+    alt: "Water and drainage pipes laid in a prepared utility trench"
+  - src: "../../../assets/photos/foundation-preparation-hq.jpg"
+    alt: "Foundation formwork and reinforcement after the ground was prepared"
 ---
 
 Groundworks on a built-up plot with restricted access. We worked with a mini excavator here because there is not enough room between the existing buildings and the trees for anything larger.
