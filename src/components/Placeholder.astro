@@ -1,9 +1,5 @@
 ---
-/**
- * Stand-in for a photograph until Jānis's images arrive.
- * Swap the inner markup for <Image src={...} /> per slot. The
- * wrapper's aspect ratio and parallax behaviour stay the same.
- */
+/** Branded editorial cover for content that does not yet have photography. */
 interface Props {
   label?: string;
   ratio?: string;
@@ -25,7 +21,14 @@ const {
   class:list={['ph-wrap', parallax && 'parallax-media', className]}
   style={`--ratio: ${ratio}`}
 >
-  <div class:list={['ph', dark && 'ph-dark']} data-ph={label} role="img" aria-label={label}></div>
+  <div class:list={['ph', dark && 'ph-dark']} role="img" aria-label={label}>
+    <span class="ph-brand" aria-hidden="true">BMES</span>
+    <svg class="ph-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M10 30 32 12l22 18v23H10V30Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+      <path d="M24 53V34h16v19M6 53h52" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <span class="ph-label" aria-hidden="true">{label}</span>
+  </div>
 </div>
 
 <style>
@@ -39,5 +42,34 @@ const {
   .ph-wrap > :global(.ph) {
     position: absolute;
     inset: 0;
+  }
+
+  .ph-brand,
+  .ph-label {
+    position: absolute;
+    z-index: 1;
+    font-family: var(--f-mono);
+    text-transform: uppercase;
+  }
+  .ph-brand {
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+  }
+  .ph-label {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-align: left;
+  }
+  .ph-mark {
+    width: min(42%, 8rem);
+    color: currentColor;
+    opacity: 0.26;
   }
 </style>

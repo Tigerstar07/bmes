@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import Placeholder from './Placeholder.astro';
+import Photo from './Photo.astro';
 import type { Lang, ServiceKey } from '../i18n/ui';
 import { useTranslations, servicePath } from '../i18n/utils';
 
@@ -15,17 +15,33 @@ const services = (await getCollection('services', (e) => e.data.lang === lang)).
 
 <ul class="svc-list" data-stagger>
   {
-    services.map((s) => (
+    services.map((s, i) => (
       <li class="svc-row" data-reveal>
-        <a class="svc-link" href={servicePath(lang, s.data.key as ServiceKey)}>
+        <a
+          class:list={['svc-link', s.data.photo && 'has-photo']}
+          href={servicePath(lang, s.data.key as ServiceKey)}
+        >
+          <span class="svc-index tnum" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+
           <div class="svc-text">
             <h3 class="svc-title">{s.data.title}</h3>
             <p class="svc-short">{s.data.short}</p>
           </div>
 
-          <div class="svc-thumb" aria-hidden="true">
-            <Placeholder label={s.data.title} ratio="4 / 3" />
-          </div>
+          {
+            s.data.photo && (
+              <div class="svc-thumb" aria-hidden="true">
+                <Photo
+                  src={s.data.photo.src}
+                  alt={s.data.photo.alt}
+                  ratio="4 / 3"
+                  sizes="240px"
+                />
+              </div>
+            )
+          }
 
           <span class="svc-go" aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -52,13 +68,22 @@ const services = (await getCollection('services', (e) => e.data.lang === lang)).
   .svc-link {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 1.5rem;
     padding: clamp(1.5rem, 3.5vw, 2.6rem) 0;
     text-decoration: none;
     color: inherit;
     transition: padding-inline 0.4s var(--ease-out);
+  }
+
+  .svc-index {
+    align-self: start;
+    margin-top: 0.35rem;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--accent-ink);
   }
 
   /* Grid children default to min-width:auto, which refuses to shrink below
@@ -117,7 +142,7 @@ const services = (await getCollection('services', (e) => e.data.lang === lang)).
 
     .svc-link:hover { padding-inline: 1.75rem; }
     .svc-link:hover .svc-title { color: var(--brand); }
-    .svc-link:hover .svc-thumb { opacity: 1; scale: 1; rotate: 0deg; }
+    .svc-link.has-photo:hover .svc-thumb { opacity: 1; scale: 1; rotate: 0deg; }
     .svc-link:hover .svc-go {
       background: var(--brand);
       border-color: var(--brand);

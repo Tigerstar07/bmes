@@ -7,7 +7,7 @@ import CtaBand from '../CtaBand.astro';
 import Photo from '../Photo.astro';
 import heroPhoto from '../../assets/photos/hero-excavator-hq.jpg';
 import { company, type Lang } from '../../i18n/ui';
-import { useTranslations, route } from '../../i18n/utils';
+import { useTranslations, route, projectPath } from '../../i18n/utils';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -139,24 +139,46 @@ const intro =
         </a>
       </div>
 
-      <div class="feat-grid" data-stagger>
+      <div class="feat-showcase">
         {
-          featured.map((p, i) => (
-            <div class:list={['feat-item', i === 0 && 'feat-item-lead']}>
+          featured[0] && (
+            <div class="feat-lead">
               <ProjectCard
                 lang={lang}
-                pid={p.data.pid}
-                title={p.data.title}
-                location={p.data.location}
-                year={p.data.year}
-                scope={p.data.scope}
-                area={p.data.area}
-                photo={p.data.leadPhoto ?? p.data.photos[0]}
-                feature={i === 0}
+                pid={featured[0].data.pid}
+                title={featured[0].data.title}
+                location={featured[0].data.location}
+                year={featured[0].data.year}
+                scope={featured[0].data.scope}
+                area={featured[0].data.area}
+                photo={featured[0].data.leadPhoto ?? featured[0].data.photos[0]}
+                feature
               />
             </div>
-          ))
+          )
         }
+
+        <div class="feat-rail" data-stagger>
+          {
+            featured.slice(1).map((p, i) => (
+              <a class="feat-brief" href={projectPath(lang, p.data.pid)} data-reveal>
+                <span class="feat-brief-n tnum" aria-hidden="true">
+                  {String(i + 2).padStart(2, '0')}
+                </span>
+                <div class="feat-brief-copy">
+                  <p class="label">
+                    {p.data.year} · {p.data.location}
+                  </p>
+                  <h3>{p.data.title}</h3>
+                  <p class="feat-brief-scope">{p.data.scope}</p>
+                </div>
+                <svg class="feat-brief-go" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            ))
+          }
+        </div>
       </div>
     </div>
   </section>
@@ -166,12 +188,12 @@ const intro =
 
 <style>
   /* ---------- hero ---------- */
-  .hero { padding-top: clamp(8rem, 15vw, 12rem); }
+  .hero { padding-top: clamp(6.75rem, 10vw, 8.5rem); }
 
   .hero-top {
     display: grid;
     gap: 2rem;
-    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+    padding-bottom: clamp(2rem, 4vw, 3.25rem);
   }
   /* The headline gets the full column width. Putting it beside the lead
      left it around 620px, which is narrower than "Viens uzņēmums," needs
@@ -309,12 +331,64 @@ const intro =
   }
 
   /* ---------- featured grid ---------- */
-  .feat-grid {
+  .feat-showcase {
     display: grid;
-    gap: 2.5rem 2rem;
+    gap: 3rem;
   }
-  @media (min-width: 760px) {
-    .feat-grid { grid-template-columns: repeat(2, 1fr); }
-    .feat-item-lead { grid-column: 1 / -1; }
+
+  .feat-rail {
+    border-top: 1px solid var(--line);
+  }
+
+  .feat-brief {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1.25rem;
+    align-items: start;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .feat-brief-n {
+    padding-top: 0.25rem;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--accent-ink);
+  }
+
+  .feat-brief-copy { min-width: 0; }
+  .feat-brief-copy h3 {
+    margin-top: 0.65rem;
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    transition: color 0.25s var(--ease-out);
+  }
+  .feat-brief-scope {
+    margin-top: 0.65rem;
+    color: var(--ink-2);
+    font-size: var(--t-sm);
+    line-height: 1.55;
+  }
+
+  .feat-brief-go {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.15rem;
+    color: var(--brand);
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .feat-brief:hover h3 { color: var(--brand); }
+  .feat-brief:hover .feat-brief-go { transform: translateX(4px); }
+
+  @media (min-width: 900px) {
+    .feat-showcase {
+      grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.75fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: start;
+    }
+    .feat-brief:first-child { padding-top: 0; }
   }
 </style>

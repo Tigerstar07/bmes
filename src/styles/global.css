@@ -58,7 +58,7 @@
   --wrap:    78rem;
   --wrap-nar: 52rem;
   --gutter:  clamp(1.25rem, 4vw, 3.5rem);
-  --sec-y:   clamp(4.5rem, 9vw, 9rem);
+  --sec-y:   clamp(4rem, 7vw, 7rem);
 
   /* --- motion --- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -385,7 +385,7 @@ button { font: inherit; color: inherit; }
 }
 
 /* ============================================================
-   photo placeholders, replaced when Jānis sends images
+   branded editorial covers for entries without photography
    ============================================================ */
 
 .ph {
@@ -394,38 +394,20 @@ button { font: inherit; color: inherit; }
   place-items: center;
   width: 100%;
   height: 100%;
-  background:
-    repeating-linear-gradient(
-      135deg,
-      var(--ph-a, #DDE5DF) 0 2px,
-      transparent 2px 11px
-    ),
-    linear-gradient(160deg, var(--ph-b, #C9D6CE), var(--ph-c, #E7EDE8));
+  background: #DDE7E0;
   color: var(--brand);
   overflow: hidden;
 }
-.ph::after {
-  content: attr(data-ph);
-  font-family: var(--f-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--brand) 55%, transparent);
-  padding: 0.4em 0.8em;
-  border: 1px solid color-mix(in oklab, var(--brand) 25%, transparent);
-  border-radius: 2px;
-  text-align: center;
-  max-width: 80%;
+.ph::before {
+  content: '';
+  position: absolute;
+  inset: 0.75rem;
+  border: 1px solid color-mix(in oklab, currentColor 18%, transparent);
+  pointer-events: none;
 }
 .ph-dark {
-  --ph-a: #1B4235;
-  --ph-b: #10352A;
-  --ph-c: #1E4C3C;
+  background: var(--brand-deep);
   color: var(--accent);
-}
-.ph-dark::after {
-  color: color-mix(in oklab, var(--accent) 75%, transparent);
-  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
 }
 
 /* ============================================================
