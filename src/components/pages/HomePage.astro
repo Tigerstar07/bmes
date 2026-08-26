@@ -4,7 +4,8 @@ import Base from '../../layouts/Base.astro';
 import ServiceList from '../ServiceList.astro';
 import ProjectCard from '../ProjectCard.astro';
 import CtaBand from '../CtaBand.astro';
-import Placeholder from '../Placeholder.astro';
+import Photo from '../Photo.astro';
+import heroPhoto from '../../assets/photos/01-operators-kabine-16x9.jpg';
 import { company, type Lang } from '../../i18n/ui';
 import { useTranslations, route } from '../../i18n/utils';
 
@@ -55,7 +56,17 @@ const intro =
     </div>
 
     <div class="hero-media" data-reveal style="--reveal-delay: 200ms; --reveal-y: 40px">
-      <Placeholder label={lang === 'lv' ? 'Galvenā bilde: objekts' : 'Hero image: project'} ratio="21 / 9" parallax dark />
+      <Photo
+        src={heroPhoto}
+        alt={lang === 'lv'
+          ? 'BMES operators ar mini ekskavatoru veic gruntsdarbus objektā'
+          : 'A BMES operator working a mini excavator on a groundworks site'}
+        ratio="16 / 9"
+        focus="center 45%"
+        parallax
+        priority
+        sizes="(min-width: 1400px) 1300px, 96vw"
+      />
       <div class="hero-scroll" aria-hidden="true">
         <span class="label">{t('hero.scroll')}</span>
         <span class="scroll-line"></span>
@@ -140,6 +151,7 @@ const intro =
                 year={p.data.year}
                 scope={p.data.scope}
                 area={p.data.area}
+                photo={p.data.leadPhoto ?? p.data.photos[0]}
                 feature={i === 0}
               />
             </div>

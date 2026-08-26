@@ -12,6 +12,9 @@ covers:
   - "Interior works and finishes through to handover"
   - "Site management and coordination of supervision"
   - "Documentation and commissioning"
+photo:
+  src: "../../../assets/photos/02-ekskavators-gruntsdarbi-3x2.jpg"
+  alt: "A mini excavator levelling the site during groundworks"
 process:
   - title: "Site visit and estimate"
     body: "We come out, walk the scope with you and produce an estimate with realistic figures rather than optimistic ones."

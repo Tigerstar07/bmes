@@ -3,6 +3,8 @@ import Base from '../../layouts/Base.astro';
 import PageHeader from '../PageHeader.astro';
 import CtaBand from '../CtaBand.astro';
 import Placeholder from '../Placeholder.astro';
+import Photo from '../Photo.astro';
+import aboutPhoto from '../../assets/photos/02-ekskavators-gruntsdarbi.jpg';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 
@@ -54,7 +56,15 @@ const copy = {
   <section class="section-pad">
     <div class="wrap about-grid">
       <div class="about-media" data-reveal>
-        <Placeholder label={lang === 'lv' ? 'Komanda / objekts' : 'Team / site'} ratio="3 / 4" parallax />
+        <Photo
+          src={aboutPhoto}
+          alt={lang === 'lv'
+            ? 'BMES mini ekskavators objektā gruntsdarbu laikā'
+            : 'A BMES mini excavator on site during groundworks'}
+          ratio="3 / 4"
+          parallax
+          sizes="(min-width: 900px) 420px, 92vw"
+        />
       </div>
       <div class="prose about-text">
         {copy.body.map((p, i) => (

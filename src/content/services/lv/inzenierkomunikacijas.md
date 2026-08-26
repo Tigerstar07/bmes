@@ -12,6 +12,9 @@ covers:
   - "Elektroinstalācija un apgaismojuma sistēmas"
   - "Viedās mājas risinājumi un automatizācija"
   - "Ugunsdrošības un vājstrāvas sistēmas"
+photo:
+  src: "../../../assets/photos/03-transeja-izbuve-3x2.jpg"
+  alt: "Tranšejas izbūve ūdensapgādes un kanalizācijas ievadiem"
 process:
   - title: "Aprēķins"
     body: "Sākam ar siltuma zudumu un gaisa apmaiņas aprēķinu, nevis ar iekārtu katalogu."

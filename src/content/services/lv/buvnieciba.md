@@ -12,6 +12,9 @@ covers:
   - "Iekšdarbi un apdare līdz nodošanai"
   - "Būvdarbu vadība un būvuzraudzības koordinācija"
   - "Dokumentācija un objekta nodošana ekspluatācijā"
+photo:
+  src: "../../../assets/photos/02-ekskavators-gruntsdarbi-3x2.jpg"
+  alt: "Mini ekskavators veic gruntsdarbus un teritorijas planēšanu objektā"
 process:
   - title: "Apskate un tāme"
     body: "Izbraucam uz vietas, pārrunājam apjomu un sagatavojam tāmi ar reālām, nevis optimistiskām pozīcijām."

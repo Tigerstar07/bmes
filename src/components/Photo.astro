@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * A real photograph. Mirrors Placeholder's props exactly, so swapping one
+ * for the other is a one-line change per slot.
+ *
+ * Astro generates responsive AVIF/WebP at build time from the enhanced
+ * master in src/assets/photos/, so nothing here ships the full-size file.
+ */
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** CSS aspect-ratio for the frame. The photo is cropped to fill it. */
+  ratio?: string;
+  /** Which part of the photo to keep when cropping. */
+  focus?: string;
+  parallax?: boolean;
+  /** Set on the first image above the fold so it is not lazy-loaded. */
+  priority?: boolean;
+  class?: string;
+  sizes?: string;
+  /**
+   * Encoder quality. Measured: dropping 68 -> 50 saved only 15%, because
+   * the cost here is content (mud, gravel, foliage are maximum-entropy),
+   * not the setting. AVIF was also measured and came out LARGER than WebP
+   * at matched quality, so WebP it is.
+   */
+  quality?: number;
+}
+
+const {
+  src,
+  alt,
+  ratio = '4 / 3',
+  focus = 'center',
+  parallax = false,
+  priority = false,
+  class: className = '',
+  sizes = '(min-width: 1200px) 1100px, (min-width: 760px) 90vw, 100vw',
+  quality = 68,
+} = Astro.props;
+---
+
+<div
+  class:list={['photo-wrap', parallax && 'parallax-media', className]}
+  style={`--ratio: ${ratio}; --focus: ${focus}`}
+>
+  <Image
+    src={src}
+    alt={alt}
+    widths={[420, 640, 900, 1200, 1500]}
+    sizes={sizes}
+    format="webp"
+    quality={quality}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding={priority ? 'sync' : 'async'}
+    fetchpriority={priority ? 'high' : 'auto'}
+  />
+</div>
+
+<style>
+  .photo-wrap {
+    position: relative;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--bg-sunken);
+  }
+
+  .photo-wrap :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focus);
+  }
+
+  /* Parallax scales the image, so it needs the headroom to drift into. */
+  .parallax-media :global(img) {
+    will-change: transform;
+  }
+</style>

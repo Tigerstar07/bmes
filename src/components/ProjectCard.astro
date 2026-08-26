@@ -1,5 +1,7 @@
 ---
 import Placeholder from './Placeholder.astro';
+import Photo from './Photo.astro';
+import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/ui';
 import { projectPath } from '../i18n/utils';
 
@@ -11,17 +13,35 @@ interface Props {
   year: number;
   scope: string;
   area?: string;
+  /** Real photograph. Falls back to a labelled placeholder when absent. */
+  photo?: { src: ImageMetadata; alt: string; focus?: string };
   /** Large cards get a wider image and bigger type. */
   feature?: boolean;
 }
 
-const { lang, pid, title, location, year, scope, area, feature = false } = Astro.props;
+const { lang, pid, title, location, year, scope, area, photo, feature = false } = Astro.props;
+const ratio = feature ? '16 / 10' : '4 / 3';
 ---
 
 <article class:list={['card', feature && 'card-feature']} data-reveal>
   <a class="card-link" href={projectPath(lang, pid)}>
     <div class="card-media">
-      <Placeholder label={title} ratio={feature ? '16 / 10' : '4 / 3'} parallax />
+      {
+        photo ? (
+          <Photo
+            src={photo.src}
+            alt={photo.alt}
+            ratio={ratio}
+            focus={photo.focus ?? 'center'}
+            parallax
+            sizes={feature
+              ? '(min-width: 1200px) 1100px, 92vw'
+              : '(min-width: 1040px) 360px, (min-width: 700px) 46vw, 92vw'}
+          />
+        ) : (
+          <Placeholder label={title} ratio={ratio} parallax />
+        )
+      }
       <span class="card-year tnum">{year}</span>
     </div>
     <div class="card-body">

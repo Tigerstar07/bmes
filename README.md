@@ -102,8 +102,8 @@ navigation, footer, sitemap, hreflang tags and language switcher together.
 
 ## Before launch
 
-1. **Photographs.** Every image is currently a labelled placeholder (`src/components/Placeholder.astro`).
-   Replace each with Astro's `<Image>` component; the wrapper's aspect ratio and parallax stay.
+1. **More photographs.** Three real photos are in. The remaining slots are still labelled
+   placeholders (`src/components/Placeholder.astro`) — see "Photos" below for how to add more.
 2. **Company details.** `company` in `src/i18n/ui.ts` is placeholder data — real registration
    number, address and phone are needed.
 3. **Domain.** Set `SITE` in `astro.config.mjs`, and the sitemap URL in `public/robots.txt`.
@@ -134,6 +134,36 @@ and the argument the rest of the site actually makes. It's two strings in `src/i
 
 No em dashes anywhere in the copy, in either language. Sentences use commas, colons or full
 stops instead. The page title separator is a pipe (`BMES | Būvniecība…`).
+
+## Photos
+
+Drop originals into `photos/incoming/` and run:
+
+    npm run photos
+
+That grades them into `src/assets/photos/` and writes before/after sheets to
+`photos/before-after/` so the result can be judged rather than assumed.
+
+The grade is exposure-led, not a generic "punch it up": the sources measured at
+0-255 range already (no haze) but with channel means down at 93-111, so it is gamma
+that fixes them, plus a modest saturation lift and a restrained unsharp mask. All
+metadata is stripped, GPS included.
+
+`CROPS` in the script cuts each photo to the exact shape of the frame it sits in.
+That matters more than the codec here: the hero was 787 KB as an uncropped upright
+frame and is 310 KB cropped to 16:9, because CSS was throwing away 44% of the pixels
+it had just downloaded.
+
+Two things were measured and rejected, so they don't get retried:
+
+- **AVIF came out larger than WebP** at matched quality settings (725 vs 619 KB on the
+  home page). Astro's `quality` is not equivalent across codecs.
+- **Lowering quality barely helps.** 68 to 50 saved 15%. The cost is the subject —
+  mud, gravel and foliage are about the most expensive thing a photo codec can encode.
+
+To swap which photo goes where: the hero is an import at the top of
+`src/components/pages/HomePage.astro`, service photos are a `photo:` block in the
+service markdown, and project photos are `leadPhoto` + `photos` in the project markdown.
 
 ## Latvian typography notes
 

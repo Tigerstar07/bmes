@@ -67,6 +67,7 @@ const filters = services.filter((s) => used.has(s.data.key));
                 year={p.data.year}
                 scope={p.data.scope}
                 area={p.data.area}
+                photo={p.data.leadPhoto ?? p.data.photos[0]}
               />
             </div>
           ))

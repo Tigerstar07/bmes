@@ -5,6 +5,7 @@ import PageHeader from '../PageHeader.astro';
 import ProjectCard from '../ProjectCard.astro';
 import CtaBand from '../CtaBand.astro';
 import Placeholder from '../Placeholder.astro';
+import Photo from '../Photo.astro';
 import type { Lang, ServiceKey } from '../../i18n/ui';
 import { useTranslations, route, servicePath } from '../../i18n/utils';
 
@@ -77,7 +78,20 @@ const next = all[(idx + 1) % all.length];
   <!-- wide image -->
   <section class="svc-media">
     <div class="wrap" data-reveal>
-      <Placeholder label={entry.data.title} ratio="21 / 9" parallax dark />
+      {
+        entry.data.photo ? (
+          <Photo
+            src={entry.data.photo.src}
+            alt={entry.data.photo.alt}
+            ratio="3 / 2"
+            focus={entry.data.photo.focus ?? 'center'}
+            parallax
+            sizes="(min-width: 1200px) 1150px, 92vw"
+          />
+        ) : (
+          <Placeholder label={entry.data.title} ratio="21 / 9" parallax dark />
+        )
+      }
     </div>
   </section>
 
@@ -117,6 +131,7 @@ const next = all[(idx + 1) % all.length];
                 year={p.data.year}
                 scope={p.data.scope}
                 area={p.data.area}
+                photo={p.data.leadPhoto ?? p.data.photos[0]}
               />
             ))}
           </div>
