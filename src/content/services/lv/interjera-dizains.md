@@ -3,7 +3,7 @@ key: "interjers"
 lang: "lv"
 order: 5
 title: "Interjera dizains"
-short: "Telpas, kas strādā ikdienā, ne tikai vizualizācijās."
+short: "Telpas, kurās ir ērti dzīvot katru dienu."
 summary: "Veidojam interjerus privātmājām, dzīvokļiem, birojiem un sabiedriskām telpām, ar risinājumiem, ko var reāli uzbūvēt par saskaņoto budžetu."
 covers:
   - "Telpu plānojuma risinājumi"

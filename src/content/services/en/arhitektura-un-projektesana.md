@@ -14,7 +14,7 @@ covers:
   - "Author supervision during construction"
 process:
   - title: "The brief"
-    body: "We work out how you will actually use the building. Not just the square metres, but the daily routine."
+    body: "We work out how you will actually use the building, from the square metres to the daily routine."
   - title: "Concept"
     body: "We present options. Changing things at this stage is cheap; later it is not."
   - title: "Detailed design"

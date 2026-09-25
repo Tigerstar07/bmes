@@ -16,7 +16,7 @@ process:
   - title: "Pieteikums"
     body: "Pasakiet, kur ir objekts un kas jūs satrauc. Vienojamies par apsekošanas laiku."
   - title: "Apsekošana"
-    body: "Izbraucam ar instrumentiem, ne tikai ar acīm. Fiksējam foto un mērījumus."
+    body: "Izbraucam ar mērinstrumentiem un fiksējam foto un mērījumus."
   - title: "Atzinums"
     body: "Saņemat rakstisku atzinumu ar defektiem, riskiem un aptuvenām novēršanas izmaksām."
   - title: "Uzturēšana"

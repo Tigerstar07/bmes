@@ -16,7 +16,7 @@ process:
   - title: "Request"
     body: "Tell us where the building is and what worries you. We agree a time for the survey."
   - title: "Survey"
-    body: "We come out with instruments, not just eyes, and record photographs and measurements."
+    body: "We come out with measuring instruments and record photographs and readings."
   - title: "Report"
     body: "You receive a written report listing defects, risks and approximate costs to put them right."
   - title: "Maintenance"

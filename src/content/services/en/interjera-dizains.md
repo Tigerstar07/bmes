@@ -3,7 +3,7 @@ key: "interjers"
 lang: "en"
 order: 5
 title: "Interior design"
-short: "Spaces that work day to day, not only in the renders."
+short: "Spaces that are comfortable to live in every day."
 summary: "We design interiors for houses, apartments, offices and public spaces, with solutions that can genuinely be built for the budget agreed."
 covers:
   - "Space planning solutions"

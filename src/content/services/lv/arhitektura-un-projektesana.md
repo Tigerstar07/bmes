@@ -14,7 +14,7 @@ covers:
   - "Autoruzraudzība būvniecības laikā"
 process:
   - title: "Uzdevums"
-    body: "Noskaidrojam, kā ēku patiešām lietosiet. Ne tikai kvadrātmetrus, bet ikdienu."
+    body: "Noskaidrojam, kā ēku patiešām lietosiet: gan kvadrātmetrus, gan ikdienas ritmu."
   - title: "Skice"
     body: "Piedāvājam risinājumu variantus. Šajā posmā izmaiņas ir lētas, vēlāk tās vairs nav."
   - title: "Būvprojekts"
