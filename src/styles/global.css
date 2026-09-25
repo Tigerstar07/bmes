@@ -177,11 +177,9 @@ button { font: inherit; color: inherit; }
    ============================================================ */
 
 .label {
-  font-family: var(--f-mono);
-  font-size: var(--t-label);
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0;
   color: var(--muted);
 }
 .section-invert .label { color: var(--on-invert-2); }

@@ -6,7 +6,7 @@
  * takes over and generates responsive AVIF/WebP at build time.
  *
  * What this actually does (real photographic processing, not AI
- * upscaling — it cannot invent detail that is not in the file):
+ * upscaling: it cannot invent detail that is not in the file):
  *
  *   1. Auto-orients from the EXIF rotation flag
  *   2. STRIPS ALL METADATA, including GPS coordinates. Phone photos of a
@@ -55,7 +55,7 @@ const GRADE = {
   /**
    * m2 is 1.2 rather than 1.5. Sharpening adds high-frequency detail, and
    * mud and foliage are already the most expensive thing a photo codec can
-   * encode — at 1.5 the hero was costing 566 KB at 1200px. This is very
+   * encode. At 1.5 the hero was costing 566 KB at 1200px. This is very
    * close visually and materially cheaper to ship.
    */
   sharpen: { sigma: 0.8, m1: 0.4, m2: 1.2 },
@@ -64,7 +64,7 @@ const GRADE = {
 /**
  * Extra crops, cut from the graded master to the exact shape of the frame
  * they will sit in. Without these the browser downloads a tall portrait
- * photo and CSS throws ~44% of it away — on the hero, which is the LCP
+ * photo and CSS throws ~44% of it away, on the hero, which is the LCP
  * image. `focus` is the vertical centre of the crop, 0 = top, 1 = bottom.
  */
 const CROPS = {
@@ -166,7 +166,7 @@ const run = async () => {
   for (const d of [OUT, PROOF]) if (!existsSync(d)) await mkdir(d, { recursive: true });
 
   if (!existsSync(IN)) {
-    console.error(`Missing ${IN}/ — create it and drop the photos in.`);
+    console.error(`Missing ${IN}/. Create it and drop the photos in.`);
     process.exit(1);
   }
 

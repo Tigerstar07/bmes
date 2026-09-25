@@ -40,7 +40,7 @@ export default defineConfig({
   },
 
   // Self-hosted, subsetted, with metric-matched fallbacks generated at build time.
-  // `latin-ext` is what carries ā č ē ģ ī ķ ļ ņ š ū ž — without it Latvian breaks mid-word.
+  // `latin-ext` is what carries ā č ē ģ ī ķ ļ ņ š ū ž. Without it Latvian breaks mid-word.
   fonts: [
     {
       provider: fontProviders.google(),

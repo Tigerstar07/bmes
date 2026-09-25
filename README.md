@@ -1,4 +1,4 @@
-# BMES — website
+# BMES website
 
 Full-cycle construction company site. Latvian (default, at the root) and English (under `/en/`).
 Static build, 37 pages, no runtime dependencies for the animation.
@@ -27,7 +27,7 @@ The preview sits on a GitHub Pages project URL, which serves from a subpath
 
 Every link in the site is built through the helpers in `src/i18n/utils.ts`, which
 prepend `import.meta.env.BASE_URL`. So **moving to the real domain is deleting the two
-`env:` lines from the workflow** — no link, canonical, hreflang or sitemap edits.
+`env:` lines from the workflow**: no link, canonical, hreflang or sitemap edits.
 
 Both builds are verified: with the base set, all 1,983 internal links resolve under
 `/bmes/`; without it, they resolve at the root against `bmes.lv`.
@@ -39,7 +39,7 @@ Both builds are verified: with the base set, all 1,983 internal links resolve un
 | Framework | Astro 7 | Static output, ~0 KB JS by default |
 | Styling | Tailwind 4 + CSS custom properties | Tokens in `src/styles/global.css` |
 | Motion | Native web platform, no library | See below |
-| Fonts | Astro Fonts API, self-hosted | `latin-ext` subset — required for Latvian |
+| Fonts | Astro Fonts API, self-hosted | `latin-ext` subset, required for Latvian |
 | Content | Astro content collections (Markdown) | `src/content/` |
 | i18n | Astro built-in `i18n` routing | `src/i18n/` |
 
@@ -49,7 +49,7 @@ Both builds are verified: with the base set, all 1,983 internal links resolve un
 src/
 ├── i18n/ui.ts             All UI strings, route map, service slugs, company details
 ├── i18n/utils.ts          Translation + URL helpers
-├── content.config.ts      Schemas — a bad frontmatter field fails the build
+├── content.config.ts      Schemas: a bad frontmatter field fails the build
 ├── content/
 │   ├── services/lv|en/    Six services per language
 │   └── projects/lv|en/    Projects per language
@@ -62,7 +62,7 @@ src/
 └── pages/                 Thin route files that render a page component
 ```
 
-Route files are deliberately thin — `src/pages/par-mums.astro` is four lines that render
+Route files are deliberately thin: `src/pages/par-mums.astro` is four lines that render
 `AboutPage` with `lang="lv"`, and `src/pages/en/about.astro` does the same with `lang="en"`.
 The page itself is written once.
 
@@ -70,18 +70,18 @@ The page itself is written once.
 
 The site uses the browser's own APIs rather than anime.js, GSAP or Motion:
 
-- **Reveals** — CSS transitions switched on by a small `IntersectionObserver`.
-- **Parallax on media** — CSS scroll-driven animations (`animation-timeline: view()`),
+- **Reveals**: CSS transitions switched on by a small `IntersectionObserver`.
+- **Parallax on media**: CSS scroll-driven animations (`animation-timeline: view()`),
   which run on the compositor thread with no JavaScript at all.
-- **Page transitions** — the native cross-document View Transitions API.
-- **Counters** — a short `requestAnimationFrame` loop.
+- **Page transitions**: the native cross-document View Transitions API.
+- **Counters**: a short `requestAnimationFrame` loop.
 
 Total shipped JavaScript for the entire site: **1.6 KB gzipped**, against roughly 20 KB for
 anime.js or 35 KB+ for GSAP with ScrollTrigger. There is also no licence question and nothing
 to break on a dependency update.
 
-Because each navigation is a real document load, there is no teardown problem between pages —
-the exact issue that makes library-based scroll animation awkward on multi-page sites.
+Because each navigation is a real document load, there is no teardown problem between pages.
+That teardown is exactly what makes library-based scroll animation awkward on multi-page sites.
 
 **Safety net:** content is visible by default. The hiding rules are scoped to `.js-motion`,
 a class added by an inline script in `<head>`, so a script error can never leave the page
@@ -89,22 +89,22 @@ blank. A 4-second failsafe reveals anything still hidden.
 
 ## Editing content
 
-**Text on service and project pages** — edit the Markdown in `src/content/`. Frontmatter is
+**Text on service and project pages**: edit the Markdown in `src/content/`. Frontmatter is
 schema-validated, so a typo in a field name fails the build instead of shipping a blank page.
 
-**Menu labels, buttons, form labels, headings** — `src/i18n/ui.ts`.
+**Menu labels, buttons, form labels, headings**: `src/i18n/ui.ts`.
 
-**Company phone, email, address, registration number** — `company` in `src/i18n/ui.ts`.
+**Company phone, email, address, registration number**: `company` in `src/i18n/ui.ts`.
 These feed the header, footer, contact page, privacy policy and the structured data at once.
 
-**URLs** — `routes` and `serviceSlugs` in `src/i18n/ui.ts`. Changing a slug there updates the
+**URLs**: `routes` and `serviceSlugs` in `src/i18n/ui.ts`. Changing a slug there updates the
 navigation, footer, sitemap, hreflang tags and language switcher together.
 
 ## Before launch
 
 1. **More photographs.** Five production-ready site visuals are in. Some unrelated project and
    service slots still use labelled placeholders (`src/components/Placeholder.astro`).
-2. **Company details.** `company` in `src/i18n/ui.ts` is placeholder data — real registration
+2. **Company details.** `company` in `src/i18n/ui.ts` is placeholder data. Real registration
    number, address and phone are needed.
 3. **Domain.** Set `SITE` in `astro.config.mjs`, and the sitemap URL in `public/robots.txt`.
 4. **Contact form.** Set `ENDPOINT` in `src/components/pages/ContactPage.astro` to the
@@ -126,7 +126,7 @@ and the slug in `serviceSlugs`.
 
 **Headline changed.** It read *"No idejas / līdz atslēgai"*, which is effectively Althaus's own
 tagline (*"Būvniecība no idejas līdz atslēgai"*). Using a direct competitor's line seemed worth
-avoiding, so it now reads *"Viens uzņēmums, / viss objekts"* — the same promise in BMES's words,
+avoiding, so it now reads *"Viens uzņēmums, / viss objekts"*, the same promise in BMES's words,
 and the argument the rest of the site actually makes. It's two strings in `src/i18n/ui.ts`
 (`hero.line1` / `hero.line2`) if you want something else.
 
@@ -158,7 +158,7 @@ Two things were measured and rejected, so they don't get retried:
 
 - **AVIF came out larger than WebP** at matched quality settings (725 vs 619 KB on the
   home page). Astro's `quality` is not equivalent across codecs.
-- **Lowering quality barely helps.** 68 to 50 saved 15%. The cost is the subject —
+- **Lowering quality barely helps.** 68 to 50 saved 15%. The cost is the subject: 
   mud, gravel and foliage are about the most expensive thing a photo codec can encode.
 
 The five `*-hq.jpg` website visuals are curated masters and are not rewritten by the camera-photo
@@ -189,6 +189,6 @@ Latvian is not English-shaped, and three settings here exist because of that:
 - WCAG AA contrast passes on all 266 text/background pairs across 13 pages, light and dark
 - Tap targets meet the 24 px WCAG 2.5.8 minimum
 - `prefers-reduced-motion` honoured throughout
-- Latvian diacritics render from the self-hosted `latin-ext` subset (`U+0100–02BA`)
+- Latvian diacritics render from the self-hosted `latin-ext` subset (`U+0100-02BA`)
 - hreflang pairs each page with its counterpart in the other language
 - Zero em dashes in source or built output
